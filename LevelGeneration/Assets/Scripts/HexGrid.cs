@@ -68,32 +68,14 @@ public class HexGrid : MonoBehaviour
 
     }
 
-    private void Update()
-    {
-        if (Input.GetMouseButton(0))
-        {
-            HandleInput();
-        }
-    }
 
-    void HandleInput()
-    {
-        Ray inputRay = Camera.main.ScreenPointToRay(Input.mousePosition);
-        RaycastHit hit;
-        if(Physics.Raycast(inputRay,out hit))
-        {
-            TouchCell(hit.point);
-        }
-
-    }
-
-    void TouchCell(Vector3 Position)
+    public void ColorCell(Vector3 Position, Color color)
     {
         Position = transform.InverseTransformPoint(Position) ;
         HexCoordinates coordinates = HexCoordinates.FromPosition(Position);
         int index = coordinates.X + coordinates.Z * width + coordinates.Z / 2;
         HexCell cell = Cells[index];
-        cell.color = touchedColor;
+        cell.color = color;
         hexMesh.Triangulate(Cells);
 
         Debug.Log("Touched at " + coordinates.ToString());
