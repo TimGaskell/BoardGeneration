@@ -6,6 +6,10 @@ public class HexCell : MonoBehaviour {
 
 	public Color color;
 
+	int elevation;
+
+	public RectTransform uiRect;
+
 	[SerializeField]
 	HexCell[] neighbors;
 
@@ -27,5 +31,26 @@ public class HexCell : MonoBehaviour {
 	public void SetNeighbor (HexDirection direction, HexCell cell) {
 		neighbors[(int)direction] = cell;
 		cell.neighbors[(int)direction.Opposite()] = this;
+	}
+
+	public int Elevation {
+		get {
+			return elevation;
+		}
+		set {
+			elevation = value;
+			Vector3 Position = transform.localPosition;
+			Position.y = value * HexMetrics.elevationStep;
+			transform.localPosition = Position;
+
+			Vector3 uiPosition = uiRect.localPosition;
+			uiPosition.z = elevation * -HexMetrics.elevationStep;
+			uiRect.localPosition = uiPosition;
+		}
+	}
+
+	public HexEdgeType GetEdgeType(HexDirection direction)
+	{
+		return HexMetrics.GetEdgeType(elevation, neighbors[(int)direction].elevation);
 	}
 }
