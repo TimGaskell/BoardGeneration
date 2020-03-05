@@ -1,42 +1,43 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class HexMapEditor : MonoBehaviour
-{
-    public Color[] colors;
+public class HexMapEditor : MonoBehaviour {
 
-    public HexGrid hexGrid;
+	public Color[] colors;
 
-    private Color activeColor;
+	public HexGrid hexGrid;
 
-    private void Awake()
-    {
-        SelectColor(0);
-    }
+	private Color activeColor;
 
-    private void Update()
-    {
-        if (Input.GetMouseButton(0) && !EventSystem.current.IsPointerOverGameObject())
-        {
-            HandleInput();
-        }
-    }
+	void Awake () {
+		SelectColor(0);
+	}
 
-    void HandleInput()
-    {
-        Ray inputRay = Camera.main.ScreenPointToRay(Input.mousePosition);
-        RaycastHit hit;
-        if (Physics.Raycast(inputRay, out hit))
-        {
-            hexGrid.ColorCell(hit.point, activeColor);
-        }
+	void Update () {
+		if (
+			Input.GetMouseButton(0) &&
+			!EventSystem.current.IsPointerOverGameObject()
+		) {
+			HandleInput();
+		}
+	}
 
-    }
+	/// <summary>
+	/// Handles Input of Mousebutton down. If it clicks on a hexagon, it will change its color to the one currently selected
+	/// </summary>
+	void HandleInput () {
+		Ray inputRay = Camera.main.ScreenPointToRay(Input.mousePosition);
+		RaycastHit hit;
+		if (Physics.Raycast(inputRay, out hit)) {
+			hexGrid.ColorCell(hit.point, activeColor);
+		}
+	}
 
-    public void SelectColor(int index)
-    {
-        activeColor = colors[index];
-    }
+	/// <summary>
+	/// Changes active color to that of another in its array
+	/// </summary>
+	/// <param name="index"> Index of color array </param>
+	public void SelectColor (int index) {
+		activeColor = colors[index];
+	}
 }
