@@ -85,6 +85,13 @@ public static class HexMetrics {
 			blendFactor;
 	}
 
+	/// <summary>
+	/// Used to create vector locations for where a step might be drawn. Having it only increment its height if its an odd step.
+	/// </summary>
+	/// <param name="a"> Starting Vector </param>
+	/// <param name="b"> Ending Vector </param>
+	/// <param name="step"> Current Terrace Step </param>
+	/// <returns> Vector3 location for the position of the next step </returns>
 	public static Vector3 TerraceLerp(Vector3 a, Vector3 b, int step)
 	{
 		float h = step * HexMetrics.horizontalTerraceStepSize;
@@ -95,12 +102,25 @@ public static class HexMetrics {
 		return a;
 	}
 
+	/// <summary>
+	/// Creates a color that is a blend between to two Colors based on size of the step and current step.
+	/// </summary>
+	/// <param name="a"> Bottom Color </param>
+	/// <param name="b"> Top Color</param>
+	/// <param name="step"> Current Terrace Step </param>
+	/// <returns> Blended Color for the Terrace Step </returns>
 	public static Color TerraceLerp(Color a, Color b, int step)
 	{
 		float h = step * HexMetrics.horizontalTerraceStepSize;
 		return Color.Lerp(a, b, h);
 	}
 
+	/// <summary>
+	/// Based on the elevations between two cells, it will return the step relationship between them.
+	/// </summary>
+	/// <param name="elevation1"> Elevation of Hex 1 </param>
+	/// <param name="elevation2"> Elevation of Hex 2 </param>
+	/// <returns> Hex edge type between the two Hexes </returns>
 	public static HexEdgeType GetEdgeType(int elevation1, int elevation2)
 	{
 		if(elevation1 == elevation2)

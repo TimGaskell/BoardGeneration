@@ -24,7 +24,7 @@ public class HexMapEditor : MonoBehaviour {
 	}
 
 	/// <summary>
-	/// Handles Input of Mousebutton down. If it clicks on a hexagon, it will change its color to the one currently selected
+	/// Handles Input of Mouse button down. If it clicks on a hexagon, it will change its color to the one currently selected
 	/// </summary>
 	void HandleInput () {
 		Ray inputRay = Camera.main.ScreenPointToRay(Input.mousePosition);
@@ -33,6 +33,11 @@ public class HexMapEditor : MonoBehaviour {
 			EditCell(hexGrid.GetCell(hit.point));
 		}
 	}
+
+	/// <summary>
+	/// Edits the cells current color and elevation. Causes the mesh renderer to redraw the mesh. 
+	/// </summary>
+	/// <param name="cell"> Hex that is going to be changed </param>
 	void EditCell(HexCell cell)
 	{
 		cell.color = activeColor;
@@ -40,6 +45,10 @@ public class HexMapEditor : MonoBehaviour {
 		hexGrid.Refresh();
 	}
 
+	/// <summary>
+	/// Used by the GUI to set the elevation that will be used.
+	/// </summary>
+	/// <param name="elevation"> Height for which the cell will become </param>
 	public void SetElevation(float elevation)
 	{
 		activeElevation = (int)elevation;

@@ -33,6 +33,10 @@ public class HexCell : MonoBehaviour {
 		cell.neighbors[(int)direction.Opposite()] = this;
 	}
 
+	/// <summary>
+	/// Used to either get the current elevation of the cell or if it is set, change its y position in the world space.
+	/// Also changes the UI text label.
+	/// </summary>
 	public int Elevation {
 		get {
 			return elevation;
@@ -49,11 +53,21 @@ public class HexCell : MonoBehaviour {
 		}
 	}
 
+	/// <summary>
+	/// Returns the edge type of a hex based on its direction to this current hex
+	/// </summary>
+	/// <param name="direction"> direction of cell relative to current cell </param>
+	/// <returns> Edge type of hex in that direction compared to this hex</returns>
 	public HexEdgeType GetEdgeType(HexDirection direction)
 	{
 		return HexMetrics.GetEdgeType(elevation, neighbors[(int)direction].elevation);
 	}
 
+	/// <summary>
+	/// Returns the edge type of a hex  compared to this current hex
+	/// </summary>
+	/// <param name="otherCell"> Hex that is to be compared </param>
+	/// <returns> Edge type of that hex compared to thishex</returns>
 	public HexEdgeType GetEdgeType(HexCell otherCell)
 	{
 		return HexMetrics.GetEdgeType(elevation, otherCell.elevation);

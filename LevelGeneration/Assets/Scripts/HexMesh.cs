@@ -70,7 +70,8 @@ public class HexMesh : MonoBehaviour {
 	}
 
 	/// <summary>
-	/// Used to create the quad and triangle vertexes that are used to join to hexes together
+	/// Used to create the quad and triangle vertexes that are used to join to hexes together. Takes into consideration the height differences between hexes to create
+	/// either terraces, flats or cliffs connections. These combination of connections have unique corners to suite their geometry.
 	/// </summary>
 	/// <param name="direction"> Direction of the hexagon vertex e.g. NE, SE etc</param>
 	/// <param name="cell"> Hexagon </param>
@@ -127,6 +128,16 @@ public class HexMesh : MonoBehaviour {
 		}
 	}
 
+	/// <summary>
+	/// Used to determine what type of Corner of the current hex is to be created based on the elevation types between the three hexes.
+	/// Based on an upside down triangle where it has a bottom, left and right.
+	/// </summary>
+	/// <param name="bottom"> Bottom vector of the bottom Hex </param>
+	/// <param name="bottomCell"> Bottom Hex of the three </param>
+	/// <param name="left"> Left vector of the left Hex </param>
+	/// <param name="leftCell"> Left Hex of the three </param>
+	/// <param name="right"> Right vector of the right hex </param>
+	/// <param name="rightCell"> right hex of the three </param>
 	void TriangulateCorner(Vector3 bottom, HexCell bottomCell, Vector3 left, HexCell leftCell, Vector3 right, HexCell rightCell)
 	{
 		HexEdgeType leftEdgeType = bottomCell.GetEdgeType(leftCell);
@@ -190,6 +201,15 @@ public class HexMesh : MonoBehaviour {
 		}
 	}
 
+	/// <summary>
+	/// Based on the three hexes, if two are a slope but are the same height whilst containing terraces connecting. Creates a terraced corner that connects them 
+	/// </summary>
+	/// <param name="begin"> Cell which is lowest </param>
+	/// <param name="begin"> Cell which is lowest </param>
+	/// <param name="left"> Left vector of the left Hex </param>
+	/// <param name="leftCell"> Left Hex of the three </param>
+	/// <param name="right"> Right vector of the right hex </param>
+	/// <param name="rightCell"> right hex of the three </param>
 	void TriangulateCornerTerraces(Vector3 begin, HexCell beginCell, Vector3 left, HexCell leftCell, Vector3 right, HexCell rightCell)
 	{
 		Vector3 v3 = HexMetrics.TerraceLerp(begin, left, 1);
@@ -218,6 +238,15 @@ public class HexMesh : MonoBehaviour {
 
 	}
 
+	/// <summary>
+	/// When a terrace corner is next a Cliff face. This extends the terraces of the hex so that it slowly blends into the cliff. Used for when the cliff is on the right of the cell with the terrace.
+	/// </summary>
+	/// <param name="begin"> Cell which is lowest </param>
+	/// <param name="begin"> Cell which is lowest </param>
+	/// <param name="left"> Left vector of the left Hex </param>
+	/// <param name="leftCell"> Left Hex of the three </param>
+	/// <param name="right"> Right vector of the right hex </param>
+	/// <param name="rightCell"> right hex of the three </param>
 	void TriangulateCornerTerracesCliff( Vector3 begin, HexCell beginCell, Vector3 left, HexCell leftCell, Vector3 right, HexCell rightCell)
 	{
 		float b = 1f / (rightCell.Elevation - beginCell.Elevation);
@@ -244,6 +273,15 @@ public class HexMesh : MonoBehaviour {
 
 	}
 
+	/// <summary>
+	/// This function reverses the order for "TriangulateCornerTerracesCliff". This is to be used when the cliff is on the left of the cell with the terrace.
+	/// </summary>
+	/// <param name="begin"> Cell which is lowest </param>
+	/// <param name="begin"> Cell which is lowest </param>
+	/// <param name="left"> Left vector of the left Hex </param>
+	/// <param name="leftCell"> Left Hex of the three </param>
+	/// <param name="right"> Right vector of the right hex </param>
+	/// <param name="rightCell"> right hex of the three </param>
 	void TriangulateCornerCliffTerraces(Vector3 begin, HexCell beginCell, Vector3 left, HexCell leftCell, Vector3 right, HexCell rightCell)
 	{
 		float b = 1f / (leftCell.Elevation - beginCell.Elevation);
@@ -266,6 +304,16 @@ public class HexMesh : MonoBehaviour {
 
 	}
 
+	/// <summary>
+	/// Used by TriangulateCornerCliffTerraces and TriangulateCornerTerracesCliff. Used to define a point in the joining corner which the terraced Hex End will join into the slope. This extends the 
+	/// terrace into the slope.
+	/// </summary>
+	/// <param name="begin"> Cell which is lowest </param>
+	/// <param name="begin"> Cell which is lowest </param>
+	/// <param name="left"> Left vector of the left Hex </param>
+	/// <param name="leftCell"> Left Hex of the three </param>
+	/// <param name="boundary"> </param>
+	/// <param name="boundaryColor">  </param>
 	void TriangulateBoundaryTriangle(Vector3 begin, HexCell beginCell, Vector3 left, HexCell leftCell, Vector3 boundary, Color boundaryColor)
 	{
 		Vector3 v2 = HexMetrics.TerraceLerp(begin, left, 1);
@@ -289,6 +337,15 @@ public class HexMesh : MonoBehaviour {
 
 	}
 
+	/// <summary>
+	/// Used to convert the bridge connecting two hexes into a stepped terrace leading to that hexes elevation.
+	/// </summary>
+	/// <param name="beginleft"> starting left vector3 of  terrace connection </param>
+	/// <param name="beginRight"> starting right vector3 terrace connection </param>
+	/// <param name="beginCell"> the hex which the steps will start from </param>
+	/// <param name="endLeft"> end left vector3 of location terrace </param>
+	/// <param name="endRight"> end right vector3 of location terrace </param>
+	/// <param name="endCell">the hex which the steps will end at </param>
 	void TriangulateEdgeTerraces(Vector3 beginleft, Vector3 beginRight, HexCell beginCell, Vector3 endLeft, Vector3 endRight, HexCell endCell) {
 
 		Vector3 v3 = HexMetrics.TerraceLerp(beginleft, endLeft, 1);

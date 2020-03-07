@@ -33,6 +33,9 @@ public class HexGrid : MonoBehaviour {
 		hexMesh.Triangulate(cells);
 	}
 
+	/// <summary>
+	/// Redraws the triangles needed for the mesh.
+	/// </summary>
 	public void Refresh()
 	{
 		hexMesh.Triangulate(cells);
