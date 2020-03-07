@@ -45,10 +45,11 @@ public class HexCell : MonoBehaviour {
 			elevation = value;
 			Vector3 Position = transform.localPosition;
 			Position.y = value * HexMetrics.elevationStep;
+			Position.y += (HexMetrics.SampleNoise(Position).y * 2f - 1f) * HexMetrics.elevationPerturbStrength;
 			transform.localPosition = Position;
 
 			Vector3 uiPosition = uiRect.localPosition;
-			uiPosition.z = elevation * -HexMetrics.elevationStep;
+			uiPosition.z = -Position.y;
 			uiRect.localPosition = uiPosition;
 		}
 	}
@@ -67,9 +68,15 @@ public class HexCell : MonoBehaviour {
 	/// Returns the edge type of a hex  compared to this current hex
 	/// </summary>
 	/// <param name="otherCell"> Hex that is to be compared </param>
-	/// <returns> Edge type of that hex compared to thishex</returns>
+	/// <returns> Edge type of that hex compared to this hex</returns>
 	public HexEdgeType GetEdgeType(HexCell otherCell)
 	{
 		return HexMetrics.GetEdgeType(elevation, otherCell.elevation);
+	}
+
+	public Vector3 Position {
+		get {
+			return transform.localPosition;
+		}
 	}
 }
