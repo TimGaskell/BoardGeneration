@@ -4,14 +4,34 @@ public class HexCell : MonoBehaviour {
 
 	public HexCoordinates coordinates;
 
-	public Color color;
+	Color Color;
 
-	int elevation;
+
+
+	int elevation = int.MinValue;
 
 	public RectTransform uiRect;
 
 	[SerializeField]
 	HexCell[] neighbors;
+
+	public HexGridChunk chunk;
+
+	void Refresh()
+	{
+		if (chunk)
+		{
+			chunk.Refresh();
+			for(int i = 0; i < neighbors.Length; i++)
+			{
+				HexCell neighbor = neighbors[i];
+				if(neighbor != null && neighbor.chunk != chunk)
+				{
+					neighbor.chunk.Refresh();
+				}
+			}
+		}
+	}
 
 	/// <summary>
 	/// Gets the neighbor of current Hex in the direction specified 
@@ -42,6 +62,9 @@ public class HexCell : MonoBehaviour {
 			return elevation;
 		}
 		set {
+			if (elevation == value)
+				return;
+
 			elevation = value;
 			Vector3 Position = transform.localPosition;
 			Position.y = value * HexMetrics.elevationStep;
@@ -51,6 +74,20 @@ public class HexCell : MonoBehaviour {
 			Vector3 uiPosition = uiRect.localPosition;
 			uiPosition.z = -Position.y;
 			uiRect.localPosition = uiPosition;
+
+			Refresh();
+		}
+	}
+
+	public Color color {
+		get {
+			return Color;
+		}
+		set {
+			if (Color == value)
+				return;
+			Color = value;
+			Refresh();
 		}
 	}
 
