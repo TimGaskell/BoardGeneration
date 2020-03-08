@@ -464,6 +464,12 @@ public class HexMesh : MonoBehaviour {
 		colors.Add(c4);
 	}
 
+	/// <summary>
+	/// Samples the noise texture to determine how much to modify the x and z values on a vector.
+	/// Used for modifying triangles and bridge positions.
+	/// </summary>
+	/// <param name="position"> Vector3 position for point where a triangle will be drawn</param>
+	/// <returns> new vector3 with perturbed x and z values </returns>
 	Vector3 Perturb(Vector3 position)
 	{
 		Vector4 sample = HexMetrics.SampleNoise(position);
@@ -472,6 +478,12 @@ public class HexMesh : MonoBehaviour {
 		return position;
 	}
 
+	/// <summary>
+	/// Creates a triangle fan which goes from its center to draw three triangles in a fan like fashion
+	/// </summary>
+	/// <param name="center"> Center vector which triangles will start to be drawn from.</param>
+	/// <param name="edge"> Group of edge vertices's which define vector3 coordinates of where to draw the triangle. </param>
+	/// <param name="color"> Color for the triangle </param>
 	void TriangulateEdgeFan(Vector3 center, EdgeVertices edge, Color color)
 	{
 		AddTriangle(center, edge.v1, edge.v2);
@@ -482,6 +494,13 @@ public class HexMesh : MonoBehaviour {
 		AddTriangleColor(color);
 	}
 
+	/// <summary>
+	/// Creates a a strip of quads between two edges. Made up of multiple triangles
+	/// </summary>
+	/// <param name="e1"> Group of edge vertices's which define vector3 coordinates of where to draw the triangle. </param>
+	/// <param name="c1"> Color for first set of edges </param>
+	/// <param name="e2"> Group of edge vertices's which define vector3 coordinates of where to draw the triangle. </param>
+	/// <param name="c2"> Color for second set of edges</param>
 	void TriangulateEdgeStrip(EdgeVertices e1, Color c1, EdgeVertices e2, Color c2)
 	{
 		AddQuad(e1.v1, e1.v2, e2.v1, e2.v2);
@@ -492,6 +511,12 @@ public class HexMesh : MonoBehaviour {
 		AddQuadColor(c1, c2);
 	}
 
+	/// <summary>
+	/// Creates a triangle without any modification to its vertices's
+	/// </summary>
+	/// <param name="v1"> Vector 3 position for start of triangle </param>
+	/// <param name="v2"> Vector 3 position for second point of triangle</param>
+	/// <param name="v3"> Vector 3 position for third point of triangle</param>
 	void AddTriangleUnperturbed( Vector3 v1, Vector3 v2, Vector3 v3)
 	{
 		int vertexIndex = vertices.Count;

@@ -143,7 +143,11 @@ public static class HexMetrics {
 		return HexEdgeType.Cliff;
 	}
 
-
+	/// <summary>
+	/// Samples the noise Texture to produce X and Z vectors for extruding the hexagons.
+	/// </summary>
+	/// <param name="Position"> World Coordinates </param>
+	/// <returns> Vector4 with changed X and Z values for scaling </returns>
 	public static Vector4 SampleNoise(Vector3 Position)
 	{
 		return noiseSource.GetPixelBilinear(Position.x * noiseScale, Position.z * noiseScale);
