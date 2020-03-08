@@ -57,6 +57,10 @@ public class HexMapEditor : MonoBehaviour {
 		}
 	}
 
+	/// <summary>
+	/// Used for editing multiple cells at a time. Determines its center and edits each individual cell in a radius to that center depending on the brush size
+	/// </summary>
+	/// <param name="center"> Middle Cell for the start </param>
 	void EditCells(HexCell center)
 	{
 		int centerX = center.coordinates.X;
@@ -79,13 +83,17 @@ public class HexMapEditor : MonoBehaviour {
 		}
 	}
 
+	/// <summary>
+	/// UI toggle for allowing Elevation changes in the level
+	/// </summary>
+	/// <param name="toggle"> Bool for switching it on and off </param>
 	public void SetApplyElevation(bool toggle)
 	{
 		applyElevation = toggle;
 	}
 
 	/// <summary>
-	/// Used by the GUI to set the elevation that will be used.
+	/// Used by the UI to set the elevation that will be used.
 	/// </summary>
 	/// <param name="elevation"> Height for which the cell will become </param>
 	public void SetElevation(float elevation)
@@ -105,11 +113,19 @@ public class HexMapEditor : MonoBehaviour {
 		}		
 	}
 
+	/// <summary>
+	/// UI setter for changing the size of the brush being used
+	/// </summary>
+	/// <param name="size"> Size of brush </param>
 	public void SetBrushSize(float size)
 	{
 		brushSize = (int)size;
 	}
 
+	/// <summary>
+	/// UI toggle for showing label UI elements on the hexes
+	/// </summary>
+	/// <param name="visible"> Bool for switching it on or off </param>
 	public void ShowUI(bool visible)
 	{
 		hexGrid.ShowUI(visible);

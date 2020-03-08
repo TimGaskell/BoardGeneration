@@ -30,6 +30,11 @@ public class HexGridChunk : MonoBehaviour
     }
 
 
+    /// <summary>
+    /// Assigns a Cell into this chunk. Sets it transform and UI parent to this chuck game object
+    /// </summary>
+    /// <param name="index"></param>
+    /// <param name="cell"></param>
     public void AddCell(int index, HexCell cell)
     {
         cells[index] = cell;
@@ -38,11 +43,18 @@ public class HexGridChunk : MonoBehaviour
         cell.uiRect.SetParent(gridCanvas.transform, false);
     }
 
+    /// <summary>
+    /// Used to enable the LateUpdate() method
+    /// </summary>
     public void Refresh()
     {
         enabled = true;
     }
 
+    /// <summary>
+    /// Toggles the labels on the Hexes
+    /// </summary>
+    /// <param name="visible"> bool for switching on or off the labels </param>
     public void ShowUI(bool visible)
     {
         gridCanvas.gameObject.SetActive(visible);

@@ -44,6 +44,10 @@ public class HexMapCamera : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Determines how much zoom for the camera between the min and max zoom. Assigns it to the camera stick. Also assigns swivel to the camera so tilt it when zooming in and out
+    /// </summary>
+    /// <param name="delta"></param>
     void AdjustZoom(float delta)
     {
         zoom = Mathf.Clamp01(zoom + delta);
@@ -56,6 +60,10 @@ public class HexMapCamera : MonoBehaviour
 
     }
 
+    /// <summary>
+    /// Assigns rotation for the camera is the y plane.
+    /// </summary>
+    /// <param name="delta"> change in rotation </param>
     void AdjustRotation(float delta)
     {
         rotationAngle += delta * rotationSpeed * Time.deltaTime;
@@ -71,6 +79,11 @@ public class HexMapCamera : MonoBehaviour
 
     }
 
+    /// <summary>
+    /// Function for moving the location of the camera. Limits the camera to the boundary of the hex map.
+    /// </summary>
+    /// <param name="xDelta"> Change in the x plane </param>
+    /// <param name="zDelta"> Change in the z plane </param>
     void AdjustPosition(float xDelta, float zDelta)
     {
         Vector3 direction = transform.localRotation * new Vector3(xDelta, 0f, zDelta).normalized;
@@ -82,6 +95,11 @@ public class HexMapCamera : MonoBehaviour
         transform.localPosition = ClampPosition(position);
     }
 
+    /// <summary>
+    /// Calculates the size of the map to limit the cameras movement
+    /// </summary>
+    /// <param name="position"> position of the camera</param>
+    /// <returns> vector3 for the camera position </returns>
     Vector3 ClampPosition(Vector3 position)
     {
         float xMax = (grid.chunkCountX * HexMetrics.chunkSizeX -0.5f) * (2f * HexMetrics.innerRadius);

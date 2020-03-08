@@ -77,6 +77,11 @@ public class HexGrid : MonoBehaviour {
 		return cells[index];
 	}
 
+	/// <summary>
+	/// Grabs a Hex Cell based off its HexCoordinates in the scene
+	/// </summary>
+	/// <param name="coordinates"> HexCoordinates struct for the cell </param>
+	/// <returns> HexCell at that coordinate set or returns null </returns>
 	public HexCell GetCell(HexCoordinates coordinates)
 	{
 		int z = coordinates.Z;
@@ -97,8 +102,8 @@ public class HexGrid : MonoBehaviour {
 	/// Assigns the neighbors of each hex in relation to each side (E.g. NE,SW, W, E, SE, NW).
 	/// Also responsible for attaching a Text label on top of each Hex displaying its location.
 	/// </summary>
-	/// <param name="x"> X Coordinate of Hex</param>
-	/// <param name="z"> Z Coordinate of Hex</param>
+	/// <param name="x"> X Column value for the Hex </param>
+	/// <param name="z"> Z Column value for the Hex </param>
 	/// <param name="i"> Index for cells </param>
 	void CreateCell (int x, int z, int i) {
 		Vector3 position;
@@ -141,6 +146,12 @@ public class HexGrid : MonoBehaviour {
 		AddCellToChunk(x, z, cell);
 	}
 
+	/// <summary>
+	/// Based on the position of the Hex, determines which chunk it will be assigned to
+	/// </summary>
+	/// <param name="x"> X Column value for the Hex </param>
+	/// <param name="z"> Z Column value for the Hex </param>
+	/// <param name="cell"> Hexcell </param>
 	void AddCellToChunk(int x, int z, HexCell cell)
 	{
 		int chunkX = x / HexMetrics.chunkSizeX;
@@ -152,6 +163,10 @@ public class HexGrid : MonoBehaviour {
 		chunk.AddCell(localX + localZ * HexMetrics.chunkSizeX, cell);
 	}
 
+	/// <summary>
+	/// Toggle for showing Label UI on Hex
+	/// </summary>
+	/// <param name="visible"> Bool value for being on or off </param>
 	public void ShowUI(bool visible)
 	{
 		for(int i=0; i< chunks.Length; i++)
