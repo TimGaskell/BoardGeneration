@@ -138,47 +138,73 @@ public class HexCell : MonoBehaviour {
 		}
 	}
 
+	/// <summary>
+	/// Returns Bool value of if current cell has an incoming river
+	/// </summary>
 	public bool HasIncomingRiver {
 		get {
 			return hasIncomingRiver;
 		}
 	}
 
+	/// <summary>
+	/// Returns Bool value of if current cell has an out going river
+	/// </summary>
 	public bool HasOutgoingRiver {
 		get {
-			return hasIncomingRiver;
+			return hasOutgoingRiver;
 		}
 	}
 
+	/// <summary>
+	/// Returns the direction from the which the cell is receiving the incoming river
+	/// </summary>
 	public HexDirection IncomingRiver {
 		get {
 			return incomingRiver;
 		}
 	}
 
+	/// <summary>
+	/// Returns the direction from the which the cell is sending its river
+	/// </summary>
 	public HexDirection OutgoingRiver {
 		get {
 			return outgoingRiver;
 		}
 	}
 
+	/// <summary>
+	/// returns true if their is a river inside of this hex
+	/// </summary>
 	public bool HasRiver {
 		get {
 			return hasIncomingRiver || hasOutgoingRiver;
 		}
 	}
 
+	/// <summary>
+	/// returns true if their is it only has an incoming river or outgoing river
+	/// </summary>
 	public bool HasRiverBeginOrEnd {
 		get {
 			return hasIncomingRiver != hasOutgoingRiver;
 		}
 	}
 
+	/// <summary>
+	/// Returns a Bool of whether there is a river flowing through an certain edge of the Hex
+	/// </summary>
+	/// <param name="direction"></param>
+	/// <returns></returns>
 	public bool HasRiverThroughEdge(HexDirection direction)
 	{
 		return hasIncomingRiver && incomingRiver == direction || hasOutgoingRiver && outgoingRiver == direction;
 	}
 
+	/// <summary>
+	/// Resets the Hex to remove outgoing river information for this hex and its river neighbor. Redraws these hexes in their chunks
+	/// </summary>
 	public void RemoveOutgoingRiver()
 	{
 		if (!hasOutgoingRiver)
@@ -193,6 +219,9 @@ public class HexCell : MonoBehaviour {
 		neighbor.RefreshSelfOnly();
 	}
 
+	/// <summary>
+	/// Resets the Hex to remove incoming river information for this hex and its river neighbor. Redraws these hexes in their chunks
+	/// </summary>
 	public void RemoveIncomingRiver()
 	{
 		if (!hasIncomingRiver)
@@ -208,12 +237,20 @@ public class HexCell : MonoBehaviour {
 
 	}
 
+	/// <summary>
+	/// Removes all river information for this hex and the hexes that are neighbored with this hex with river information.
+	/// </summary>
 	public void RemoveRiver()
 	{
 		RemoveIncomingRiver();
 		RemoveOutgoingRiver();
 	}
 
+	/// <summary>
+	/// Used to set the hex to having an outgoing river through it. Checks if the hex is allowed to have a river flowing through it and to its neighbor in a specific direction.
+	/// Redraws the hex in its respective chunk along with its neighbor which the river is moving to.
+	/// </summary>
+	/// <param name="direction"></param>
 	public void SetOutgoingRiver(HexDirection direction)
 	{
 		if(hasOutgoingRiver && outgoingRiver == direction)
@@ -243,9 +280,21 @@ public class HexCell : MonoBehaviour {
 		neighbor.RefreshSelfOnly();
 	}
 
-	public float SteamBedY {
+	/// <summary>
+	/// Bottom Y position of the river bed
+	/// </summary>
+	public float StreamBedY {
 		get {
 			return (elevation + HexMetrics.streamBedElevationOffset) * HexMetrics.elevationStep;
+		}
+	}
+
+	/// <summary>
+	/// Elevation of which the river surface on the Y value will be places.
+	/// </summary>
+	public float RiverSurfaceY {
+		get {
+			return (elevation + HexMetrics.riverSurfaceElevationOffset) * HexMetrics.elevationStep;
 		}
 	}
 }

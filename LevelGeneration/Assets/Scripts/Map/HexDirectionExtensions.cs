@@ -32,6 +32,11 @@ public static class HexDirectionExtensions
         return direction == HexDirection.NE ? HexDirection.NW : (direction - 1);
     }
 
+    /// <summary>
+    /// Grabs the second previous direction of the direction inputed
+    /// </summary>
+    /// <param name="direction">  Direction of the hexagon vertex e.g. NE, SE etc </param>
+    /// <returns> Second previous direction  </returns>
     public static HexDirection Previous2(this HexDirection direction)
     {
         direction -= 2;
@@ -48,6 +53,11 @@ public static class HexDirectionExtensions
         return direction == HexDirection.NW ? HexDirection.NE : (direction + 1);
     }
 
+    /// <summary>
+    /// Grabs the second next direction of the direction inputed
+    /// </summary>
+    /// <param name="direction">  Direction of the hexagon vertex e.g. NE, SE etc </param>
+    /// <returns> second next direction </returns>
     public static HexDirection Next2(this HexDirection direction)
     {
         direction += 2;

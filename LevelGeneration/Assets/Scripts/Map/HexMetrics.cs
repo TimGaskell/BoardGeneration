@@ -8,6 +8,7 @@ public enum HexEdgeType
 public static class HexMetrics {
 
 	public const float outerToInner = 0.866025404f;
+
 	public const float innerToOuter = 1f / outerToInner;
 
 	public const float outerRadius = 10f;
@@ -30,7 +31,7 @@ public static class HexMetrics {
 
 	public static Texture2D noiseSource;
 
-	public const float cellPerturbStrength = 0f;
+	public const float cellPerturbStrength = 4f;
 
 	public const float elevationPerturbStrength = 1.5f;
 
@@ -38,7 +39,9 @@ public static class HexMetrics {
 
 	public const int chunkSizeX = 5, chunkSizeZ = 5;
 
-	public const float streamBedElevationOffset = -1f;
+	public const float streamBedElevationOffset = -1.75f;
+
+	public const float riverSurfaceElevationOffset = -0.5f;
 
 
 	/// <summary>
@@ -160,6 +163,11 @@ public static class HexMetrics {
 		return noiseSource.GetPixelBilinear(Position.x * noiseScale, Position.z * noiseScale);
 	}
 
+	/// <summary>
+	/// Compares Two corner values of a hex going in its current direction and the next direction after it. This  combined it taking into account the solid factor, locates a vector3 middle edge where for the direction to meet up
+	/// </summary>
+	/// <param name="direction"> Direction of the hexagon vertex e.g. NE, SE etc </param>
+	/// <returns> A middle edge between two hexes depending on its direction </returns>
 	public static Vector3 GetSolidEdgeMiddle(HexDirection direction)
 	{
 		return (corners[(int)direction] + corners[(int)direction + 1]) * (0.5f * solidFactor);

@@ -19,6 +19,11 @@ public class HexGrid : MonoBehaviour {
 	public HexGridChunk chunkPrefab;
 	HexGridChunk[] chunks;
 
+
+	/// <summary>
+	/// Used to determine how many cells are in total are in the x direction and z direction.
+	/// Creates the chunks then the cells
+	/// </summary>
 	public void Awake () {
 
 		HexMetrics.noiseSource = noiseSource;
@@ -36,6 +41,9 @@ public class HexGrid : MonoBehaviour {
 		HexMetrics.noiseSource = noiseSource;
 	}
 
+	/// <summary>
+	/// Used for creating a set amount of chunks based on how many chunks are set or its X amount and Y amount. 
+	/// </summary>
 	void CreateChunks()
 	{
 		chunks = new HexGridChunk[chunkCountX * chunkCountZ];
@@ -50,6 +58,9 @@ public class HexGrid : MonoBehaviour {
 		}
 	}
 
+	/// <summary>
+	/// Creates as many cells needed to fill the entire board based on its size.
+	/// </summary>
 	void CreateCells()
 	{
 		cells = new HexCell[cellCountZ * cellCountX];
@@ -101,6 +112,7 @@ public class HexGrid : MonoBehaviour {
 	/// Instantiates the Hex prefabs, assigning them their positions in relation to each other.
 	/// Assigns the neighbors of each hex in relation to each side (E.g. NE,SW, W, E, SE, NW).
 	/// Also responsible for attaching a Text label on top of each Hex displaying its location.
+	/// Adds the cell to its appropriate chunk
 	/// </summary>
 	/// <param name="x"> X Column value for the Hex </param>
 	/// <param name="z"> Z Column value for the Hex </param>
@@ -151,7 +163,7 @@ public class HexGrid : MonoBehaviour {
 	/// </summary>
 	/// <param name="x"> X Column value for the Hex </param>
 	/// <param name="z"> Z Column value for the Hex </param>
-	/// <param name="cell"> Hexcell </param>
+	/// <param name="cell"> Hex cell </param>
 	void AddCellToChunk(int x, int z, HexCell cell)
 	{
 		int chunkX = x / HexMetrics.chunkSizeX;

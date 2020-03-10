@@ -4,60 +4,61 @@ using UnityEngine;
 
 public class HexGridChunk : MonoBehaviour
 {
-    HexCell[] cells;
+	HexCell[] cells;
 
-    public HexMesh terrain;
+	public HexMesh terrain, rivers;
 
-    Canvas gridCanvas;
-
-
-
-    private void Awake()
-    {
-        gridCanvas = GetComponentInChildren<Canvas>();
-
-        cells = new HexCell[HexMetrics.chunkSizeX * HexMetrics.chunkSizeZ];
-        ShowUI(false);
-    }
+	Canvas gridCanvas;
 
 
 
-    private void LateUpdate()
-    {
+
+	private void Awake()
+	{
+		gridCanvas = GetComponentInChildren<Canvas>();
+
+		cells = new HexCell[HexMetrics.chunkSizeX * HexMetrics.chunkSizeZ];
+		ShowUI(false);
+	}
+
+
+
+	private void LateUpdate()
+	{
 		Triangulate();
-        enabled = false;
-    }
+		enabled = false;
+	}
 
 
-    /// <summary>
-    /// Assigns a Cell into this chunk. Sets it transform and UI parent to this chuck game object
-    /// </summary>
-    /// <param name="index"></param>
-    /// <param name="cell"></param>
-    public void AddCell(int index, HexCell cell)
-    {
-        cells[index] = cell;
-        cell.chunk = this;
-        cell.transform.SetParent(transform, false);
-        cell.uiRect.SetParent(gridCanvas.transform, false);
-    }
+	/// <summary>
+	/// Assigns a Cell into this chunk. Sets it transform and UI parent to this chuck game object
+	/// </summary>
+	/// <param name="index"></param>
+	/// <param name="cell"></param>
+	public void AddCell(int index, HexCell cell)
+	{
+		cells[index] = cell;
+		cell.chunk = this;
+		cell.transform.SetParent(transform, false);
+		cell.uiRect.SetParent(gridCanvas.transform, false);
+	}
 
-    /// <summary>
-    /// Used to enable the LateUpdate() method
-    /// </summary>
-    public void Refresh()
-    {
-        enabled = true;
-    }
+	/// <summary>
+	/// Used to enable the LateUpdate() method
+	/// </summary>
+	public void Refresh()
+	{
+		enabled = true;
+	}
 
-    /// <summary>
-    /// Toggles the labels on the Hexes
-    /// </summary>
-    /// <param name="visible"> bool for switching on or off the labels </param>
-    public void ShowUI(bool visible)
-    {
-        gridCanvas.gameObject.SetActive(visible);
-    }
+	/// <summary>
+	/// Toggles the labels on the Hexes
+	/// </summary>
+	/// <param name="visible"> bool for switching on or off the labels </param>
+	public void ShowUI(bool visible)
+	{
+		gridCanvas.gameObject.SetActive(visible);
+	}
 
 	/// <summary>
 	/// Clears previous mesh data to create a set of triangles to form a hexagon
@@ -66,11 +67,13 @@ public class HexGridChunk : MonoBehaviour
 	public void Triangulate()
 	{
 		terrain.Clear();
+		rivers.Clear();
 		for (int i = 0; i < cells.Length; i++)
 		{
 			Triangulate(cells[i]);
 		}
 		terrain.Apply();
+		rivers.Apply();
 	}
 
 	/// <summary>
@@ -101,7 +104,7 @@ public class HexGridChunk : MonoBehaviour
 		{
 			if (cell.HasRiverThroughEdge(direction))
 			{
-				e.v3.y = cell.SteamBedY;
+				e.v3.y = cell.StreamBedY;
 				if (cell.HasRiverBeginOrEnd)
 				{
 					TriangulateWithRiverBeginOrEnd(direction, cell, center, e);
@@ -153,7 +156,8 @@ public class HexGridChunk : MonoBehaviour
 
 		if (cell.HasRiverThroughEdge(direction))
 		{
-			e2.v3.y = neighbor.SteamBedY;
+			e2.v3.y = neighbor.StreamBedY;
+			TriangulateRiverQuad(e1.v2, e1.v4, e2.v2, e2.v4, cell.RiverSurfaceY, neighbor.RiverSurfaceY, 0.8f, cell.HasIncomingRiver && cell.IncomingRiver == direction);
 		}
 
 		if (cell.GetEdgeType(direction) == HexEdgeType.Slope)
@@ -446,6 +450,14 @@ public class HexGridChunk : MonoBehaviour
 
 	}
 
+	/// <summary>
+	/// Triangulation method used to create a Hexagon with a trench for a river that runs through the middle towards the specified direction. Creates the joining channels between rivers.
+	/// Adds river quads above the trench with respective UV coordinates from the middle of the hex.
+	/// </summary>
+	/// <param name="direction"> Direction of the river e.g. NE, SE etc </param>
+	/// <param name="cell"> Current cell </param>
+	/// <param name="center"> Center location of the cell </param>
+	/// <param name="e"> Edge vertices's of the hex </param>
 	void TriangulateWithRiver(HexDirection direction, HexCell cell, Vector3 center, EdgeVertices e)
 	{
 		Vector3 centerL, centerR;
@@ -490,8 +502,22 @@ public class HexGridChunk : MonoBehaviour
 		terrain.AddQuadColor(cell.color);
 		terrain.AddTriangle(centerR, m.v4, m.v5);
 		terrain.AddTriangleColor(cell.color);
+
+		bool reversed = cell.IncomingRiver == direction;
+
+		TriangulateRiverQuad(centerL, centerR, m.v2, m.v4, cell.RiverSurfaceY, 0.4f, reversed);
+		TriangulateRiverQuad(m.v2, m.v4, e.v2, e.v4, cell.RiverSurfaceY, 0.6f, reversed);
+
 	}
 
+	/// <summary>
+	/// Triangulation method used to create a Hexagon with a trench for a river that runs through the middle towards the specified direction. Creates the pointed ends for beginning or end of river.
+	/// Adds triangle and Quad UVs for the river mesh from the center of the hexagon
+	/// </summary>
+	/// <param name="direction"> Direction of the river e.g. NE, SE etc </param>
+	/// <param name="cell"> Current cell </param>
+	/// <param name="center"> Center location of the cell </param>
+	/// <param name="e"> Edge vertices's of the hex </param>
 	void TriangulateWithRiverBeginOrEnd(HexDirection direction, HexCell cell, Vector3 center, EdgeVertices e)
 	{
 		EdgeVertices m = new EdgeVertices(Vector3.Lerp(center, e.v1, 0.5f), Vector3.Lerp(center, e.v5, 0.5f));
@@ -499,8 +525,30 @@ public class HexGridChunk : MonoBehaviour
 
 		TriangulateEdgeStrip(m, cell.color, e, cell.color);
 		TriangulateEdgeFan(center, m, cell.color);
+
+
+		bool reversed = cell.HasIncomingRiver;
+		TriangulateRiverQuad(m.v2, m.v4, e.v2, e.v4, cell.RiverSurfaceY, 0.6f, reversed);
+		center.y = m.v2.y = m.v4.y = cell.RiverSurfaceY;
+		rivers.AddTriangle(center, m.v2, m.v4);
+		if (reversed)
+		{
+			rivers.AddTriangleUV(new Vector2(0.5f, 0.4f), new Vector2(1f, 0.2f), new Vector2(0f, 0.2f));
+		}
+		else
+		{
+			rivers.AddTriangleUV(new Vector2(0.5f, 0.4f), new Vector2(0f, 0.6f), new Vector2(1f, 0.6f));
+		}
+
 	}
 
+	/// <summary>
+	/// Fills in the surrounding area of the river so that the hexagon is completely filled by land.
+	/// </summary>
+	/// <param name="direction"> Direction of the river  e.g. NE, SE etc</param>
+	/// <param name="cell"> Current hex </param>
+	/// <param name="center"> Center of Hex </param>
+	/// <param name="e"> Edge vertices's of Hex </param>
 	void TriangulateAdjacentToRiver(HexDirection direction, HexCell cell, Vector3 center, EdgeVertices e)
 	{
 
@@ -565,5 +613,46 @@ public class HexGridChunk : MonoBehaviour
 		terrain.AddQuadColor(c1, c2);
 	}
 
+	/// <summary>
+	/// Adds UV quad vectors for where the river mesh will be drawn in the river bed.
+	/// </summary>
+	/// <param name="v1"> First point of the river quad</param>
+	/// <param name="v2"> Second point of the river quad</param>
+	/// <param name="v3"> Third point of the river quad</param>
+	/// <param name="v4"> Fourth point of the river quad</param>
+	/// <param name="y1"> Height of the first Hex river surface </param>
+	/// <param name="y2"> Height of the second Hex river surface</param>
+	/// <param name="v"> Which way to stretch the v coordinates of the UV </param>
+	/// <param name="reversed"> Reverse UV coordinates if it is an incoming river quad </param>
+	void TriangulateRiverQuad(Vector3 v1, Vector3 v2, Vector3 v3, Vector3 v4, float y1, float y2, float v, bool reversed)
+	{
+		v1.y = v2.y = y1;
+		v3.y = v4.y = y2;
+		rivers.AddQuad(v1, v2, v3, v4);
 
+		if (reversed)
+		{
+			rivers.AddQuadUV(1f, 0f, 0.8f - v, 0.6f - v);
+		}
+		else
+		{
+			rivers.AddQuadUV(0f, 1f, v, v + 0.2f);
+		}
+
+	}
+
+	/// <summary>
+	/// Adds UV quad vectors for where the river mesh will be drawn in the river bed. Used if their is only one height
+	/// </summary>
+	/// <param name="v1"> First point of the river quad</param>
+	/// <param name="v2"> Second point of the river quad</param>
+	/// <param name="v3"> Third point of the river quad</param>
+	/// <param name="v4"> Fourth point of the river quad</param>
+	/// <param name="y"> Height of the  Hex river surface</param>
+	/// <param name="v"> Which way to stretch the v coordinates of the UV </param>
+	/// <param name="reversed"> Reverse UV coordinates if it is an incoming river quad </param>
+	void TriangulateRiverQuad(Vector3 v1, Vector3 v2, Vector3 v3, Vector3 v4,float y, float v, bool reversed)
+	{
+		TriangulateRiverQuad(v1, v2, v3, v4, y, y, v, reversed);
+	}
 }

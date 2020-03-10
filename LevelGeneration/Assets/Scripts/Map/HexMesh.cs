@@ -103,6 +103,10 @@ public class HexMesh : MonoBehaviour {
 		triangles.Add(vertexIndex + 3);
 	}
 
+	/// <summary>
+	/// Add color information of quad to color list
+	/// </summary>
+	/// <param name="color"> Hex Color </param>
 	public void AddQuadColor(Color color)
 	{
 		colors.Add(color);
@@ -137,6 +141,12 @@ public class HexMesh : MonoBehaviour {
 		colors.Add(c4);
 	}
 
+	/// <summary>
+	/// Adds vertex information to create a triangle in the UVS list. Describes the three points to create a triangle in UV coordinates
+	/// </summary>
+	/// <param name="uv1"> Vector 3 position for start of triangle</param>
+	/// <param name="uv2"> Vector 3 position for second point of triangle</param>
+	/// <param name="uv3"> Vector 3 position for third point of triangle</param>
 	public void AddTriangleUV(Vector2 uv1, Vector2 uv2, Vector2 uv3)
 	{
 		uvs.Add(uv1);
@@ -144,6 +154,13 @@ public class HexMesh : MonoBehaviour {
 		uvs.Add(uv3);
 	}
 
+	/// <summary>
+	/// Adds the quad vertices's in the UVS list. Describes the four UV points to create a quad.
+	/// </summary>
+	/// <param name="uv1"> Vector 3 position for start of quad</param>
+	/// <param name="uv2"> Vector 3 position for second point of quad</param>
+	/// <param name="uv3"> Vector 3 position for third point of quad</param>
+	/// <param name="uv4"> Vector 3 position for the fourth point of a quad </param>
 	public void AddQuadUV(Vector2 uv1, Vector2 uv2, Vector2 uv3, Vector2 uv4)
 	{
 		uvs.Add(uv1);
@@ -152,6 +169,13 @@ public class HexMesh : MonoBehaviour {
 		uvs.Add(uv4);
 	}
 
+	/// <summary>
+	/// Another way of adding quad vertices's in UVS list. Describes the four UV points to create a quad in respective to the min and max values of the UV map between 0-1.
+	/// </summary>
+	/// <param name="uMin"> Min U value of UV map</param>
+	/// <param name="uMax"> Max U value of UV map</param>
+	/// <param name="vMin"> Min V value of UV map </param>
+	/// <param name="vMax"> Max V value of UV map</param>
 	public void AddQuadUV(float uMin, float uMax, float vMin, float vMax)
 	{
 		uvs.Add(new Vector2(uMin, vMin));
@@ -160,6 +184,9 @@ public class HexMesh : MonoBehaviour {
 		uvs.Add(new Vector2(uMax, vMax));
 	}
 
+	/// <summary>
+	/// Clears all hexmesh data: Meshes, vertices, colors and triangles. Grabs new lists to be used to store new vertices, colors, uvs and triangle data
+	/// </summary>
 	public void Clear()
 	{
 		hexMesh.Clear();
@@ -175,6 +202,10 @@ public class HexMesh : MonoBehaviour {
 		triangles = ListPool<int>.Get();
 	}
 
+	/// <summary>
+	/// Sets vertices's, colors, UVs, triangles and colliders for the mesh. Once applied their lists are added back to the stack to be reused.
+	/// Determines which data is to be used whilst generating triangles.
+	/// </summary>
 	public void Apply()
 	{
 		hexMesh.SetVertices(vertices);

@@ -173,11 +173,19 @@ public class HexMapEditor : MonoBehaviour {
 		hexGrid.ShowUI(visible);
 	}
 
+	/// <summary>
+	/// Sets where to draw rivers or not
+	/// </summary>
+	/// <param name="mode"> On or off </param>
 	public void SetRiverMode (int mode)
 	{
 		riverMode = (OptionalToggle)mode;
 	}
 
+	/// <summary>
+	/// Used for determining whether the use is currently dragging their mouse through multiple cells
+	/// </summary>
+	/// <param name="currentCell"> Initial Hex the drag started from </param>
 	void ValidateDrag(HexCell currentCell)
 	{
 		for(dragDirection = HexDirection.NE; dragDirection <= HexDirection.NW; dragDirection++)
