@@ -205,8 +205,8 @@ public class HexCell : MonoBehaviour {
 	/// <summary>
 	/// Returns a Bool of whether there is a river flowing through an certain edge of the Hex
 	/// </summary>
-	/// <param name="direction"></param>
-	/// <returns></returns>
+	/// <param name="direction">  Direction of the hexagon vertex e.g. NE, SE etc </param>
+	/// <returns> true if there its incoming river or outgoing river are coming from the same direction as the inputed direction </returns>
 	public bool HasRiverThroughEdge(HexDirection direction)
 	{
 		return hasIncomingRiver && incomingRiver == direction || hasOutgoingRiver && outgoingRiver == direction;
@@ -260,7 +260,7 @@ public class HexCell : MonoBehaviour {
 	/// Used to set the hex to having an outgoing river through it. Checks if the hex is allowed to have a river flowing through it and to its neighbor in a specific direction.
 	/// Redraws the hex in its respective chunk along with its neighbor which the river is moving to.
 	/// </summary>
-	/// <param name="direction"></param>
+	/// <param name="direction"> Direction of the hexagon vertex e.g. NE, SE etc</param>
 	public void SetOutgoingRiver(HexDirection direction)
 	{
 		if(hasOutgoingRiver && outgoingRiver == direction)
@@ -309,23 +309,40 @@ public class HexCell : MonoBehaviour {
 		}
 	}
 
+	/// <summary>
+	/// Direction from which the river is ending or beginning from.
+	/// </summary>
 	public HexDirection RiverBeginOrEndDirection {
 		get {
 			return hasIncomingRiver ? IncomingRiver : outgoingRiver;
 		}
 	}
 
+	/// <summary>
+	/// Checks if there is a road that passes through this hexes edge in a certain direction
+	/// </summary>
+	/// <param name="direction">  Direction of the hexagon vertex e.g. NE, SE etc</param>
+	/// <returns> true or false if there is a road passing through the specified edge in that direction </returns>
 	public bool HasRoadThroughEdge (HexDirection direction)
 	{
 		return roads[(int)direction];
 	}
 
+	/// <summary>
+	/// Determines an elevation difference between this hex and its neighbor in the specified direction
+	/// </summary>
+	/// <param name="direction">  Direction of the hexagon vertex e.g. NE, SE etc </param>
+	/// <returns> Elevation difference between hex neighbor in direction </returns>
 	public int GetElevationDifference(HexDirection direction)
 	{
 		int difference = elevation - GetNeighbor(direction).elevation;
 		return difference >= 0 ? difference : -difference;
 	}
 
+	/// <summary>
+	/// Checks all directions of this hex cell to see if it contains any roads.
+	/// Returns true or false
+	/// </summary>
 	public bool HasRoads {
 		get {
 			for(int i = 0; i< roads.Length; i++)
@@ -339,6 +356,13 @@ public class HexCell : MonoBehaviour {
 		}
 	}
 
+	/// <summary>
+	/// Adds a road to this specific direction if the cell currently doesn't have:
+	/// - a road already in that direction
+	/// - a river running through the specified edge
+	///  - the difference in elevation is not greater than 1
+	/// </summary>
+	/// <param name="direction">  Direction of the hexagon vertex e.g. NE, SE etc </param>
 	public void AddRoad(HexDirection direction)
 	{
 		if(!roads[(int)direction] && !HasRiverThroughEdge(direction) && GetElevationDifference(direction) <= 1)
@@ -347,6 +371,9 @@ public class HexCell : MonoBehaviour {
 		}
 	}
 
+	/// <summary>
+	/// Removes all roads in the hex
+	/// </summary>
 	public void RemoveRoads()
 	{
 		for (int i = 0; i< roads.Length; i++)
@@ -354,12 +381,18 @@ public class HexCell : MonoBehaviour {
 			if (roads[i])
 			{
 				SetRoad(i, false);
-
-				
+			
 			}
 		}
 	}
 
+	/// <summary>
+	/// Used for adding or removing roads to a hex based on the state inputed.
+	/// Is used to also update the neighbors road information in the opposite direction as the connection affects how its drawn.
+	/// Refreshes and redraws the neighbor hex chunk and current hex chunk
+	/// </summary>
+	/// <param name="index"></param>
+	/// <param name="state"></param>
 	void SetRoad(int index, bool state)
 	{
 		roads[index] = state;

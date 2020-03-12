@@ -653,6 +653,14 @@ public class HexGridChunk : MonoBehaviour
 
 	}
 
+	/// <summary>
+	/// Used to fill in center area of the hex.
+	/// If the hex has a road through it. It creates a road quads and triangles between the hex and the in the specified direction.
+	/// </summary>
+	/// <param name="direction"> Direction of the hexagon vertex e.g. NE, SE etc </param>
+	/// <param name="cell"> Current Cell</param>
+	/// <param name="center"> Center of current cell </param>
+	/// <param name="e">Edge vertices's of Hex</param>
 	void TriangulateWithoutRiver( HexDirection direction, HexCell cell, Vector3 center, EdgeVertices e)
 	{
 		TriangulateEdgeFan(center, e, cell.color);
@@ -679,6 +687,16 @@ public class HexGridChunk : MonoBehaviour
 		TriangulateRiverQuad(v1, v2, v3, v4, y, y, v, reversed);
 	}
 
+	/// <summary>
+	/// Adds quad information to the roads list about which points the quads are to be drawn to create the road
+	/// Adds quad UV information to the roads list on how its mesh texture is to be rendered. 
+	/// </summary>
+	/// <param name="v1"> Quad Vector 1</param>
+	/// <param name="v2"> Quad Vector 2</param>
+	/// <param name="v3"> Quad Vector 3</param>
+	/// <param name="v4"> Quad Vector 4</param>
+	/// <param name="v5"> Quad Vector 5</param>
+	/// <param name="v6"> Quad Vector 6</param>
 	void TriangulateRoadSegment(Vector3 v1, Vector3 v2, Vector3 v3, Vector3 v4, Vector3 v5, Vector3 v6)
 	{
 		roads.AddQuad(v1, v2, v4, v5);
@@ -687,6 +705,14 @@ public class HexGridChunk : MonoBehaviour
 		roads.AddQuadUV(1f, 0f, 0f, 0f);
 	}
 
+	/// <summary>
+	/// Decides on how the road is meant to be drawn based off if the road is going through an edge or through the center
+	/// </summary>
+	/// <param name="center"> center of hex</param>
+	/// <param name="mL"> left middle vertex </param>
+	/// <param name="mR"> right middle vertex </param>
+	/// <param name="e"> Edge vertices's of Hex</param>
+	/// <param name="hasRoadThroughEdge"> Bool value of if road is going through an edge</param>
 	void TriangulateRoad(Vector3 center, Vector3 mL, Vector3 mR, EdgeVertices e, bool hasRoadThroughEdge)
 	{
 		if (hasRoadThroughEdge)
@@ -705,12 +731,26 @@ public class HexGridChunk : MonoBehaviour
 		}
 	}
 
+	/// <summary>
+	/// Adds additional triangles to the road in the center of the hex
+	/// </summary>
+	/// <param name="center"> center of the hex </param>
+	/// <param name="mL"> left middle vertex </param>
+	/// <param name="mR"> right middle vertex </param>
 	void TriangulateRoadEdge(Vector3 center, Vector3 mL, Vector3 mR)
 	{
 		roads.AddTriangle(center, mL, mR);
 		roads.AddTriangleUV(new Vector2(1f, 0f), new Vector2(0f, 0f), new Vector2(0f, 0f));
 	}
 
+	/// <summary>
+	/// Used for created more rounded edges towards the center of a cell. 
+	/// If there is a road going through an edge in the specified direction then keep the edge triangles wider
+	/// Otherwise, depending if there is a road in the adjacent hex to this one, make them smaller.
+	/// </summary>
+	/// <param name="direction"> Direction of the hexagon vertex e.g. NE, SE etc </param>
+	/// <param name="cell"> Current Hex</param>
+	/// <returns> Returns X and Y scalers for triangle size </returns>
 	Vector2 GetRoadInterpolators(HexDirection direction, HexCell cell)
 	{
 		Vector2 interpolators;
@@ -726,6 +766,15 @@ public class HexGridChunk : MonoBehaviour
 		return interpolators;
 	}
 
+	/// <summary>
+	/// Handler of how roads and rivers are meant to interact with each other based on the rivers direction and directions in adjacent cells.
+	/// Manipulates the roads center and center of the hex depending on the river.
+	/// This cuts off split pieces of the road mesh when intersected by a river and mover its center to go around the river so they don't overlap
+	/// </summary>
+	/// <param name="direction"> Direction of the hexagon vertex e.g. NE, SE etc</param>
+	/// <param name="cell">Current Hex</param>
+	/// <param name="center"> Center of HEx</param>
+	/// <param name="e">Edge vertices's of Hex</param>
 	void TriangulateRoadAdjacentToRiver(HexDirection direction, HexCell cell, Vector3 center, EdgeVertices e)
 	{
 		bool hasRoadThroughEdge = cell.HasRoadThroughEdge(direction);

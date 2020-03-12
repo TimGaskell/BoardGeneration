@@ -186,7 +186,7 @@ public class HexMapEditor : MonoBehaviour {
 	}
 
 	/// <summary>
-	/// Sets where to draw rivers or not
+	/// Sets whether to draw rivers or not
 	/// </summary>
 	/// <param name="mode"> On or off </param>
 	public void SetRiverMode (int mode)
@@ -194,6 +194,10 @@ public class HexMapEditor : MonoBehaviour {
 		riverMode = (OptionalToggle)mode;
 	}
 
+	/// <summary>
+	/// Sets where roads are to be drawn or not
+	/// </summary>
+	/// <param name="mode"></param>
 	public void SetRoadMode (int mode)
 	{
 		roadMode = (OptionalToggle)mode;
