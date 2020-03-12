@@ -10,6 +10,7 @@ public class HexCell : MonoBehaviour {
 	HexDirection incomingRiver, outgoingRiver;
 
 	int elevation = int.MinValue;
+	int waterLevel;
 
 	public RectTransform uiRect;
 
@@ -305,7 +306,7 @@ public class HexCell : MonoBehaviour {
 	/// </summary>
 	public float RiverSurfaceY {
 		get {
-			return (elevation + HexMetrics.riverSurfaceElevationOffset) * HexMetrics.elevationStep;
+			return (elevation + HexMetrics.waterElevationOffset) * HexMetrics.elevationStep;
 		}
 	}
 
@@ -399,5 +400,31 @@ public class HexCell : MonoBehaviour {
 		neighbors[index].roads[(int)((HexDirection)index).Opposite()] = state;
 		neighbors[index].RefreshSelfOnly();
 		RefreshSelfOnly();
+	}
+
+	public int WaterLevel {
+		get {
+			return waterLevel;
+		}
+		set {
+			if(waterLevel == value)
+			{
+				return;
+			}
+			waterLevel = value;
+			Refresh();
+		}
+	}
+
+	public bool isUnderwater {
+		get {
+			return waterLevel > elevation;
+		}
+	}
+
+	public float waterSrufaceY {
+		get {
+			return (waterLevel + HexMetrics.waterElevationOffset) * HexMetrics.elevationStep;
+		}
 	}
 }
