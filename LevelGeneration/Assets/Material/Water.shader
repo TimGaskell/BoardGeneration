@@ -12,6 +12,7 @@
 			CGPROGRAM
 			#pragma surface surf Standard alpha
 			#pragma target 3.0
+
 			#include "Water.cginc"
 
 			sampler2D _MainTex;

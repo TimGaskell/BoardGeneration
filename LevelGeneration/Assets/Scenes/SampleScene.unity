@@ -949,7 +949,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -713, y: -56.30002}
+  m_AnchoredPosition: {x: -589.4, y: -56.30002}
   m_SizeDelta: {x: 90, y: 20}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &244415120
@@ -1215,7 +1215,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -713, y: 157.2}
+  m_AnchoredPosition: {x: -583.5, y: 157.2}
   m_SizeDelta: {x: 90, y: 20}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &383772914
@@ -2297,7 +2297,7 @@ MonoBehaviour:
     type: 3}
   cellLabelPrefab: {fileID: 9028762901795588590, guid: b63404350447adb41a1793749d4ac892,
     type: 3}
-  noiseSource: {fileID: 2800000, guid: c59be4788a6319b4ebc45b158c23ae2b, type: 3}
+  noiseSource: {fileID: 2800000, guid: 9ed03c1acf1119b41a24c6dbfb6f17cb, type: 3}
   chunkPrefab: {fileID: 3815206564724452478, guid: 66f3787ae873de949840dbe410745f08,
     type: 3}
 --- !u!4 &655905776
@@ -5500,7 +5500,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -713, y: 200.9}
+  m_AnchoredPosition: {x: -584.7, y: 200.9}
   m_SizeDelta: {x: 90, y: 20}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1734575156
