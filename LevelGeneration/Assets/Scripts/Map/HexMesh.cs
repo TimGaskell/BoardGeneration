@@ -103,6 +103,13 @@ public class HexMesh : MonoBehaviour {
 		triangles.Add(vertexIndex + 3);
 	}
 
+	/// <summary>
+	/// Adds the quad vertices's and triangles to their respective lists. Adds them without having their vector positions being perturbed by any noise function.
+	/// </summary>
+	/// <param name="v1"> Inside corner of hexagon in the direction </param>
+	/// <param name="v2"> Second inside corner of hexagon in the direction </param>
+	/// <param name="v3"> Vector difference between the bridge and v1 </param>
+	/// <param name="v4"> Vector difference between the bridge and v2 </param>
 	public void AddQuadUnperturbed(
 		Vector3 v1, Vector3 v2, Vector3 v3, Vector3 v4) {
 		int vertexIndex = vertices.Count;
@@ -169,6 +176,13 @@ public class HexMesh : MonoBehaviour {
 		uvs.Add(uv3);
 	}
 
+	/// <summary>
+	/// Adds vertex information to create a triangle in the UV2S list. Describes the three points to create a triangle in UV coordinates. 
+	/// Used as a second set of UVS 
+	/// </summary>
+	/// <param name="uv1"> Vector 3 position for start of triangle</param>
+	/// <param name="uv2"> Vector 3 position for second point of triangle</param>
+	/// <param name="uv3"> Vector 3 position for third point of triangle</param>
 	public void AddTriangleUV2(Vector2 uv1, Vector2 uv2, Vector2 uv3) {
 		uv2s.Add(uv1);
 		uv2s.Add(uv2);
@@ -205,6 +219,14 @@ public class HexMesh : MonoBehaviour {
 		uvs.Add(new Vector2(uMax, vMax));
 	}
 
+	/// <summary>
+	/// Adds the quad vertices's in the UV2S list. Describes the four UV points to create a quad.
+	/// Used as a second set of UVS 
+	/// </summary>
+	/// <param name="uv1"> Vector 3 position for start of quad</param>
+	/// <param name="uv2"> Vector 3 position for second point of quad</param>
+	/// <param name="uv3"> Vector 3 position for third point of quad</param>
+	/// <param name="uv4"> Vector 3 position for the fourth point of a quad </param>
 	public void AddQuadUV2(Vector2 uv1, Vector2 uv2, Vector2 uv3, Vector2 uv4) {
 		uv2s.Add(uv1);
 		uv2s.Add(uv2);
@@ -212,6 +234,14 @@ public class HexMesh : MonoBehaviour {
 		uv2s.Add(uv4);
 	}
 
+	/// <summary>
+	/// Another way of adding quad vertices's in UV2S list. Describes the four UV points to create a quad in respective to the min and max values of the UV map between 0-1.
+	/// Used as a second set of UVS 
+	/// </summary>
+	/// <param name="uMin"> Min U value of UV map</param>
+	/// <param name="uMax"> Max U value of UV map</param>
+	/// <param name="vMin"> Min V value of UV map </param>
+	/// <param name="vMax"> Max V value of UV map</param>
 	public void AddQuadUV2(float uMin, float uMax, float vMin, float vMax) {
 		uv2s.Add(new Vector2(uMin, vMin));
 		uv2s.Add(new Vector2(uMax, vMin));

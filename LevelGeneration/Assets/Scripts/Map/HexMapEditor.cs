@@ -226,11 +226,19 @@ public class HexMapEditor : MonoBehaviour {
 		isDrag = false;
 	}
 
+	/// <summary>
+	/// UI toggle for changing the water level of a hex
+	/// </summary>
+	/// <param name="toggle">  On or off </param>
 	public void SetApplyWaterLevel (bool toggle)
 	{
 		applyWaterLevel = toggle;
 	}
 
+	/// <summary>
+	/// UI slider for changing the active water level of the hex.
+	/// </summary>
+	/// <param name="level"> Height of water </param>
 	public void SetWaterLevel(float level)
 	{
 		activeWaterLevel = (int)level;

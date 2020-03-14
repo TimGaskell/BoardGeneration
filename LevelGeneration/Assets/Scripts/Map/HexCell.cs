@@ -395,6 +395,10 @@ public class HexCell : MonoBehaviour {
 		RefreshSelfOnly();
 	}
 
+	/// <summary>
+	/// Returns the elevation at which the water level is set at.
+	/// Setting a new water level redraws the water mesh if it can be validated.
+	/// </summary>
 	public int WaterLevel {
 		get {
 			return waterLevel;
@@ -410,22 +414,38 @@ public class HexCell : MonoBehaviour {
 		}
 	}
 
+	/// <summary>
+	/// Determines if hex is underwater by comparing its elevation to the waters elevation.
+	/// </summary>
 	public bool isUnderwater {
 		get {
 			return waterLevel > elevation;
 		}
 	}
 
+	/// <summary>
+	/// Returns the water meshes height.
+	/// </summary>
 	public float waterSurfaceY {
 		get {
 			return (waterLevel + HexMetrics.waterElevationOffset) * HexMetrics.elevationStep;
 		}
 	}
 
+	/// <summary>
+	/// Determines if the river can flowing into another hex cell:
+	/// - if there is a cell to go into and the elevation of the current hex is greater
+	/// - or if there is a cell to go into and the water level of current cell is equal to the next cells elevation
+	/// </summary>
+	/// <param name="neighbor"> Cell river is to flow into </param>
+	/// <returns> true or false if a river can be drawn into hex </returns>
 	bool IsValidRiverDestination(HexCell neighbor) {
 		return neighbor && (elevation >= neighbor.elevation || waterLevel == neighbor.elevation);
 	}
 
+	/// <summary>
+	/// Determines whether a river can be created between two hexes by checking their heights and water levels
+	/// </summary>
 	void ValidateRivers() {
 		if(hasOutgoingRiver && !IsValidRiverDestination(GetNeighbor(outgoingRiver))) {
 			RemoveOutgoingRiver();

@@ -192,15 +192,30 @@ public static class HexMetrics {
 		return position;
 	}
 
+	/// <summary>
+	/// Gets first inside corner of the hexagon, proportionate by how much water is to be scaled 
+	/// </summary>
+	/// <param name="direction"> Direction of the hexagon vertex e.g. NE, SE etc</param>
+	/// <returns> vector 3 position of the first point for a water triangle in that direction </returns>
 	public static Vector3 GetFirstWaterCorner (HexDirection direction)
 	{
 		return corners[(int)direction] * waterFactor;
 	}
+	/// <summary>
+	/// Gets second inside corner of the hexagon, proportionate by how much water is to be scaled 
+	/// </summary>
+	/// <param name="direction"> Direction of the hexagon vertex e.g. NE, SE etc</param>
+	/// <returns> vector 3 position of the second point for a water triangle in that direction </returns>
 	public static Vector3 GetSecondWaterCorner(HexDirection direction)
 	{
 		return corners[(int)direction + 1] * waterFactor;
 	}
 
+	/// <summary>
+	/// Gets the connecting area between two hexes
+	/// </summary>
+	/// <param name="direction">  Direction of the hexagon vertex e.g. NE, SE etc </param>
+	/// <returns> Vector3 of bridge location </returns>
 	public static Vector3 GetWaterBridge(HexDirection direction)
 	{
 		return (corners[(int)direction] + corners[(int)direction + 1]) * waterBlendFactor;

@@ -10,9 +10,6 @@ public class HexGridChunk : MonoBehaviour
 
 	Canvas gridCanvas;
 
-
-
-
 	private void Awake()
 	{
 		gridCanvas = GetComponentInChildren<Canvas>();
@@ -20,15 +17,11 @@ public class HexGridChunk : MonoBehaviour
 		cells = new HexCell[HexMetrics.chunkSizeX * HexMetrics.chunkSizeZ];
 		ShowUI(false);
 	}
-
-
-
 	private void LateUpdate()
 	{
 		Triangulate();
 		enabled = false;
 	}
-
 
 	/// <summary>
 	/// Assigns a Cell into this chunk. Sets it transform and UI parent to this chuck game object
@@ -883,6 +876,12 @@ public class HexGridChunk : MonoBehaviour
 		}
 	}
 
+	/// <summary>
+	/// Method designed for creating water meshes. Determines whether to create open water or water with a shore based on if the neighbor is underwater too.
+	/// </summary>
+	/// <param name="direction"> Direction of the hexagon vertex e.g. NE, SE etc </param>
+	/// <param name="cell"> Current Cell </param>
+	/// <param name="center"> Center of cell </param>
 	void TriangulateWater(HexDirection direction, HexCell cell, Vector3 center)
 	{
 		center.y = cell.waterSurfaceY;
@@ -899,6 +898,14 @@ public class HexGridChunk : MonoBehaviour
 
 	}
 
+	/// <summary>
+	/// Creates the triangle and quad information for where to locate and draw the water mesh.
+	/// Determines whether it needs to create bridges and triangle corner joiners based on if there are other water hexes in its neighbors
+	/// </summary>
+	/// <param name="direction"> Direction of the hexagon vertex e.g. NE, SE etc </param>
+	/// <param name="cell"> Current Cell </param>
+	/// <param name="Neighbor"> Neighbor of current cell in specified direction </param>
+	/// <param name="center"> Center of cell </param>
 	void TriangulateOpenWater(HexDirection direction, HexCell cell, HexCell Neighbor, Vector3 center)
 	{
 		Vector3 c1 = center + HexMetrics.GetFirstWaterCorner(direction);
@@ -926,8 +933,15 @@ public class HexGridChunk : MonoBehaviour
 		}
 	}
 
-	void TriangulateWaterShore(HexDirection direction, HexCell cell, HexCell Neighbour, Vector3 center)
-	{
+	/// <summary>
+	/// Creates and adds mesh triangles, quads and UVs based on the edge area of a hex where there is no water in a specific direction.
+	/// Creates a shore effect around those edges
+	/// </summary>
+	/// <param name="direction"> Direction of the hexagon vertex e.g. NE, SE etc </param>
+	/// <param name="cell"> Current Cell </param>
+	/// <param name="Neighbour"> Neighbor of current cell in specified direction </param>
+	/// <param name="center"> Center of cell </param>
+	void TriangulateWaterShore(HexDirection direction, HexCell cell, HexCell Neighbour, Vector3 center) {
 
 		EdgeVertices e1 = new EdgeVertices(center + HexMetrics.GetFirstWaterCorner(direction), center + HexMetrics.GetSecondWaterCorner(direction));
 		water.AddTriangle(center, e1.v1, e1.v2);
@@ -963,6 +977,16 @@ public class HexGridChunk : MonoBehaviour
 		}
 	}
 
+	/// <summary>
+	/// Method used for correctly calculating vector values for river mesh to be drawn into a water mesh. Moves the rivers bottom y values of the mesh upwards to where the water position is.
+	/// </summary>
+	/// <param name="v1"> Vector3 vector 1 of river quad </param>
+	/// <param name="v2"> Vector3 vector 2 of river quad</param>
+	/// <param name="v3"> Vector3 vector 3 of river quad</param>
+	/// <param name="v4"> Vector3 vector 4 of river quad</param>
+	/// <param name="y1"> y position of start of quad</param>
+	/// <param name="y2"> y position of end of quad</param>
+	/// <param name="waterY"> y position of water level </param>
 	void TriangulateWaterfallInWater (Vector3 v1, Vector3 v2, Vector3 v3, Vector3 v4, float y1 ,float y2 ,float waterY) {
 
 		v1.y = v2.y = y1;
@@ -978,6 +1002,13 @@ public class HexGridChunk : MonoBehaviour
 		rivers.AddQuadUV(0f, 1f, 0.8f, 1f);
 	}
 
+	/// <summary>
+	/// Adds triangle, quad, triangles UVs and Quad UVs to their respective lists to create a wedge between where a river and water meet on the edge of a hex.
+	/// The multiple UVs blend the two effects of waves and flowing water into the same space.
+	/// </summary>
+	/// <param name="e1"> Edge vertices's of water corners of hex </param>
+	/// <param name="e2"> Edge vertices's of solid corners of hex</param>
+	/// <param name="incomingRiver"> whether the hex has an incoming river or not </param>
 	void TriangulateEstuary(EdgeVertices e1, EdgeVertices e2, bool incomingRiver) {
 
 		waterShore.AddTriangle(e2.v1, e1.v2, e1.v1);
