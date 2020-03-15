@@ -19,6 +19,8 @@ public class HexGrid : MonoBehaviour {
 	public HexGridChunk chunkPrefab;
 	HexGridChunk[] chunks;
 
+	public int seed;
+
 
 	/// <summary>
 	/// Used to determine how many cells are in total are in the x direction and z direction.
@@ -27,6 +29,7 @@ public class HexGrid : MonoBehaviour {
 	public void Awake () {
 
 		HexMetrics.noiseSource = noiseSource;
+		HexMetrics.InitializeHashGrid(seed);
 
 		cellCountX = chunkCountX * HexMetrics.chunkSizeX;
 		cellCountZ = chunkCountZ * HexMetrics.chunkSizeZ;
@@ -38,7 +41,10 @@ public class HexGrid : MonoBehaviour {
 
 	private void OnEnable()
 	{
-		HexMetrics.noiseSource = noiseSource;
+		if (!HexMetrics.noiseSource) {
+			HexMetrics.noiseSource = noiseSource;
+			HexMetrics.InitializeHashGrid(seed);
+		}
 	}
 
 	/// <summary>

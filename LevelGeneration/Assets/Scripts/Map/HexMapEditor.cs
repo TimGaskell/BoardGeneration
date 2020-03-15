@@ -10,8 +10,10 @@ public class HexMapEditor : MonoBehaviour {
 	private Color activeColor;
 	int activeElevation;
 	int activeWaterLevel;
+	int activeUrbanLevel, activeFarmLevel, activePlantLevel;
 	bool applyColor;
 	bool applyElevation = true;
+	bool applyUrbanLevel, applyFarmLevel, applyPlantLevel;
 	bool applyWaterLevel = true;
 
 	bool isDrag;
@@ -89,6 +91,15 @@ public class HexMapEditor : MonoBehaviour {
 			if (applyWaterLevel)
 			{
 				cell.WaterLevel = activeWaterLevel;
+			}
+			if (applyUrbanLevel) {
+				cell.UrbanLevel = activeUrbanLevel;
+			}
+			if (applyFarmLevel) {
+				cell.FarmLevel = activeFarmLevel;
+			}
+			if (applyPlantLevel) {
+				cell.PlantLevel = activePlantLevel;
 			}
 			if (riverMode == OptionalToggle.No)
 			{
@@ -242,5 +253,53 @@ public class HexMapEditor : MonoBehaviour {
 	public void SetWaterLevel(float level)
 	{
 		activeWaterLevel = (int)level;
+	}
+
+	/// <summary>
+	/// UI toggle for changing the urban level of a hex
+	/// </summary>
+	/// <param name="toggle">  On or off </param>
+	public void SetApplyUrbanLevel(bool toggle) {
+		applyUrbanLevel = toggle;
+	}
+
+	/// <summary>
+	/// UI slider for changing the urban level of the hex.
+	/// </summary>
+	/// <param name="level"> Type of prefabs to choose from in level e.g small, medium , large </param>
+	public void SetUrbanLevel(float level) {
+		activeUrbanLevel = (int)level;
+	}
+
+	/// <summary>
+	/// UI toggle for changing the farm level of a hex
+	/// </summary>
+	/// <param name="toggle">  On or off </param>
+	public void SetApplyFarmLevel(bool toggle) {
+		applyFarmLevel = toggle;
+	}
+
+	/// <summary>
+	/// UI slider for changing the farm level of the hex.
+	/// </summary>
+	/// <param name="level">  Type of prefabs to choose from in level e.g small, medium , large </param>
+	public void SetFarmLevel(float level) {
+		activeFarmLevel = (int)level;
+	}
+
+	/// <summary>
+	/// UI toggle for changing the plant level of a hex
+	/// </summary>
+	/// <param name="toggle">  On or off </param>
+	public void SetApplyPlantLevel (bool toggle) {
+		applyPlantLevel = toggle;
+	}
+
+	/// <summary>
+	/// UI slider for changing the plant level of the hex.
+	/// </summary>
+	/// <param name="level"> Type of prefabs to choose from in level e.g small, medium , large </param>
+	public void SetPlantLevel(float level) {
+		activePlantLevel = (int)level;
 	}
 }

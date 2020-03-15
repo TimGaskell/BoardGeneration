@@ -48,6 +48,13 @@ public static class HexMetrics {
 	public const float waterBlendFactor = 1f - waterFactor;
 
 
+	public const int hashGridSize = 256;
+
+	public const float hashGridScale = 0.25f;
+
+	static HexHash[] hashGrid;
+
+
 	/// <summary>
 	/// Defined corners of a hexagon for which the triangles can be drawn upon
 	/// </summary>
@@ -219,5 +226,55 @@ public static class HexMetrics {
 	public static Vector3 GetWaterBridge(HexDirection direction)
 	{
 		return (corners[(int)direction] + corners[(int)direction + 1]) * waterBlendFactor;
+	}
+
+	/// <summary>
+	/// Generates new HexHash for generating random values for sampling.
+	/// Uses a seed for generation so that it can be recreated if needed.
+	/// </summary>
+	/// <param name="seed"> Seed value for random generation </param>
+	public static void InitializeHashGrid(int seed) {
+		hashGrid = new HexHash[hashGridSize * hashGridSize];
+		Random.State currentState = Random.state;
+		Random.InitState(seed);
+		for (int i = 0; i < hashGrid.Length; i++) {
+			hashGrid[i] = HexHash.Create();
+		}
+		Random.state = currentState;
+	}
+
+	/// <summary>
+	/// Samples HashGrid for the specified position on the hex.
+	/// </summary>
+	/// <param name="position"> Position on hex </param>
+	/// <returns> Generates specialized hash grid value for each position on hex </returns>
+	public static HexHash SampleHashGrid(Vector3 position) {
+		int x = (int)(position.x * hashGridScale) % hashGridSize;
+		if( x < 0) {
+			x += hashGridSize;
+		}
+		int z = (int)(position.z * hashGridScale) % hashGridSize;
+		if (z < 0) {
+			z += hashGridSize;
+		}
+		return hashGrid[x + z * hashGridSize];
+	}
+
+	/// <summary>
+	/// Thresh hold for sampling different types of collection levels. Chances of sampling from low tier to high tier in that order
+	/// </summary>
+	static float[][] featureThresholds = {
+		new float[] {0.0f, 0.0f, 0.4f},
+		new float[] {0.0f, 0.4f, 0.6f},
+		new float[] {0.4f, 0.6f, 0.8f}
+	};
+
+	/// <summary>
+	/// Returns the threshold type based on the level set in the UI
+	/// </summary>
+	/// <param name="level"> low, medium or high </param>
+	/// <returns> float array for chances of prefab level</returns>
+	public static float[] GetFeatureThresholds(int level) {
+		return featureThresholds[level];
 	}
 }

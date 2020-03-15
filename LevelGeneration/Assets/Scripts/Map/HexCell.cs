@@ -11,6 +11,7 @@ public class HexCell : MonoBehaviour {
 
 	int elevation = int.MinValue;
 	int waterLevel;
+	int urbanLevel, farmLevel, plantLevel;
 
 	public RectTransform uiRect;
 
@@ -454,4 +455,55 @@ public class HexCell : MonoBehaviour {
 			RemoveIncomingRiver();
 		}
 	}
+
+	/// <summary>
+	/// Gets urban level of the cell
+	/// Set value of urban level if not the same value. Refresh self to draw meshes
+	/// </summary>
+	public int UrbanLevel {
+		get {
+			return urbanLevel;
+		}
+		set {
+			if (urbanLevel != value) {
+				urbanLevel = value;
+				RefreshSelfOnly();
+			}
+		}
+	}
+
+	/// <summary>
+	/// Gets farm level of the cell
+	/// Set value of farm level if not the same value. Refresh self to draw meshes
+	/// </summary>
+	public int FarmLevel {
+		get {
+			return farmLevel;
+		}
+		set {
+			if(farmLevel != value) {
+				farmLevel = value;
+				RefreshSelfOnly();
+			}
+		}
+	}
+
+	/// <summary>
+	/// Gets plant level of the cell
+	/// Set value of plant level if not the same value. Refresh self to draw meshes
+	/// </summary>
+	public int PlantLevel {
+		get {
+			return plantLevel;
+		}
+		set {
+			if(plantLevel != value) {
+				plantLevel = value;
+				RefreshSelfOnly();
+			}
+		}
+	}
+
+	
+
 }
