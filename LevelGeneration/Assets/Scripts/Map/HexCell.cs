@@ -13,6 +13,8 @@ public class HexCell : MonoBehaviour {
 	int waterLevel;
 	int urbanLevel, farmLevel, plantLevel;
 
+	bool walled;
+
 	public RectTransform uiRect;
 
 	[SerializeField]
@@ -504,6 +506,21 @@ public class HexCell : MonoBehaviour {
 		}
 	}
 
+	/// <summary>
+	/// Get returns the Bool if this hex is walled
+	/// Set changes the bool and redraws all hexes 
+	/// </summary>
+	public bool Walled {
+		get {
+			return walled;
+		}
+		set {
+			if(walled != value) {
+				walled = value;
+				Refresh();
+			}
+		}
+	}
 	
 
 }

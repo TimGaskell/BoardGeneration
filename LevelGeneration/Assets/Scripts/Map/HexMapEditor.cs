@@ -27,7 +27,7 @@ public class HexMapEditor : MonoBehaviour {
 		Ignore, Yes, No
 	}
 
-	OptionalToggle riverMode, roadMode;
+	OptionalToggle riverMode, roadMode, walledMode;
 
 	void Awake () {
 		SelectColor(0);
@@ -109,7 +109,10 @@ public class HexMapEditor : MonoBehaviour {
 			{
 				cell.RemoveRoads();
 			}
-			else if (isDrag)
+			if(walledMode != OptionalToggle.Ignore) {
+				cell.Walled = walledMode == OptionalToggle.Yes;
+			}
+			if (isDrag)
 			{
 				HexCell otherCell = cell.GetNeighbor(dragDirection.Opposite());
 				if (otherCell)
@@ -205,7 +208,7 @@ public class HexMapEditor : MonoBehaviour {
 	/// <summary>
 	/// Sets whether to draw rivers or not
 	/// </summary>
-	/// <param name="mode"> On or off </param>
+	/// <param name="mode"> On, off or ignore </param>
 	public void SetRiverMode (int mode)
 	{
 		riverMode = (OptionalToggle)mode;
@@ -214,7 +217,7 @@ public class HexMapEditor : MonoBehaviour {
 	/// <summary>
 	/// Sets where roads are to be drawn or not
 	/// </summary>
-	/// <param name="mode"></param>
+	/// <param name="mode">  On, off or ignore </param>
 	public void SetRoadMode (int mode)
 	{
 		roadMode = (OptionalToggle)mode;
@@ -301,5 +304,13 @@ public class HexMapEditor : MonoBehaviour {
 	/// <param name="level"> Type of prefabs to choose from in level e.g small, medium , large </param>
 	public void SetPlantLevel(float level) {
 		activePlantLevel = (int)level;
+	}
+
+	/// <summary>
+	/// UI toggle for allowing walls to be drawn on a hex
+	/// </summary>
+	/// <param name="mode">  On, off or ignore  </param>
+	public void SetWalledMode (int mode) {
+		walledMode = (OptionalToggle)mode;
 	}
 }

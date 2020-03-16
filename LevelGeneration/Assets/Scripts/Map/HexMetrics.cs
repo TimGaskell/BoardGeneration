@@ -47,6 +47,11 @@ public static class HexMetrics {
 
 	public const float waterBlendFactor = 1f - waterFactor;
 
+	public const float wallHeight = 3f;
+
+	public const float wallThickness = 0.75f;
+
+	public const float wallElevationOffset = verticalTerraceStepSize;
 
 	public const int hashGridSize = 256;
 
@@ -276,5 +281,35 @@ public static class HexMetrics {
 	/// <returns> float array for chances of prefab level</returns>
 	public static float[] GetFeatureThresholds(int level) {
 		return featureThresholds[level];
+	}
+
+	/// <summary>
+	/// Used for creating an offset vector from the middle of two wall vectors
+	/// </summary>
+	/// <param name="near"> Vector 3 of the near hex edge point </param>
+	/// <param name="far"> Vector 3 of the near hex edge point </param>
+	/// <returns> A vector 3 offset from the middle to reach the near and far wall</returns>
+	public static Vector3 WallThicknessOffset(Vector3 near, Vector3 far) {
+		Vector3 offset;
+		offset.x = far.x - near.x;
+		offset.y = 0f;
+		offset.z = far.z - near.z;
+		return offset.normalized * (wallThickness * 0.5f);
+	}
+
+	/// <summary>
+	/// Interpolates between the near and far edge vectors of the two walls. 
+	/// If the near wall is lower than the far wall, adjust its elevation so that it sits lower into the terrain
+	/// </summary>
+	/// <param name="near"> Vector 3 of the near hex edge point </param>
+	/// <param name="far">  Vector 3 of the far hex edge point</param>
+	/// <returns> modified near vector with appropriate y value </returns>
+	public static Vector3 WallLerp(Vector3 near, Vector3 far) {
+		near.x += (far.x - near.x) * 0.5f;
+		near.z += (far.z - near.z) * 0.5f;
+
+		float v = near.y < far.y ? wallElevationOffset : (1f - wallElevationOffset);
+		near.y += (far.y - near.y) * v;
+		return near;
 	}
 }
