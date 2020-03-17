@@ -4,9 +4,11 @@ using UnityEngine;
 
 public class HexFeatureManager : MonoBehaviour {
     public HexFeatureCollection[] urbanCollections, farmCollections, plantCollection;
+    public Transform[] special;
     Transform container;
 
     public HexMesh walls;
+    public Transform wallTower, bridge;
 
     /// <summary>
     /// Destroys the previous container if there is already one.
@@ -64,7 +66,11 @@ public class HexFeatureManager : MonoBehaviour {
     /// <param name="cell"> current hex </param>
     /// <param name="Position"> position on the hex </param>
     public void AddFeature(HexCell cell, Vector3 Position) {
-       
+
+        if (cell.IsSpecial) {
+            return;
+        }
+
         HexHash hash = HexMetrics.SampleHashGrid(Position);
 
         Transform prefab = PickPrefab(urbanCollections,cell.UrbanLevel, hash.a, hash.d);
@@ -181,7 +187,7 @@ public class HexFeatureManager : MonoBehaviour {
     /// <param name="farLeft"> Far vector 3 point for left of wall</param>
     /// <param name="nearRight">  Near vector 3 point for right wall</param>
     /// <param name="farRight">  Far vector 3 point for right wall</param>
-    void AddWallSegment(Vector3 nearLeft, Vector3 farLeft, Vector3 nearRight, Vector3 farRight) {
+    void AddWallSegment(Vector3 nearLeft, Vector3 farLeft, Vector3 nearRight, Vector3 farRight, bool addTower = false) {
 
         nearLeft = HexMetrics.Perturb(nearLeft);
         farLeft = HexMetrics.Perturb(farLeft);
@@ -211,9 +217,16 @@ public class HexFeatureManager : MonoBehaviour {
         v3.y = leftTop;
         v4.y = rightTop;
         walls.AddQuadUnperturbed(v2, v1, v4, v3);
-
         walls.AddQuadUnperturbed(t1, t2, v3, v4);
 
+        if (addTower) {
+            Transform towerInstance = Instantiate(wallTower);
+            towerInstance.transform.localPosition = (left + right) * 0.5f;
+            Vector3 rightDirection = right - left;
+            rightDirection.y = 0f;
+            towerInstance.transform.right = rightDirection;
+            towerInstance.SetParent(container, false);
+        }
     }
 
     /// <summary>
@@ -235,9 +248,15 @@ public class HexFeatureManager : MonoBehaviour {
         bool hasLeftWall = !leftcell.isUnderwater && PivotCell.GetEdgeType(leftcell) != HexEdgeType.Cliff;
         bool hasRightWall = !rightCell.isUnderwater && PivotCell.GetEdgeType(rightCell) != HexEdgeType.Cliff;
 
+        bool hasTower = false;
+
         if (hasLeftWall) {
             if (hasRightWall) {
-                AddWallSegment(pivot, left, pivot, right);
+                if(leftcell.Elevation == rightCell.Elevation) {
+                    HexHash hash = HexMetrics.SampleHashGrid((pivot + left + right) * (1f / 3f));
+                    hasTower = hash.e < HexMetrics.wallTowerThreshold;
+                }
+                AddWallSegment(pivot, left, pivot, right, hasTower);
             }
             else if (leftcell.Elevation < rightCell.Elevation) {
                 AddWallWedge(pivot, left, right);
@@ -303,6 +322,38 @@ public class HexFeatureManager : MonoBehaviour {
         walls.AddQuadUnperturbed(v1, point, v3, pointTop);
         walls.AddQuadUnperturbed(point, v2, pointTop, v4);
         walls.AddTriangleUnPerturbed(pointTop, v3, v4);
+
+    }
+
+    /// <summary>
+    /// Creates a bridge Game object between two roads that are separated by a river
+    /// </summary>
+    /// <param name="roadcenter1"> Center of road of first side of river </param>
+    /// <param name="roadCenter2"> Center of road of second side of river</param>
+    public void AddBridge(Vector3 roadcenter1, Vector3 roadCenter2) {
+
+        roadcenter1 = HexMetrics.Perturb(roadcenter1);
+        roadCenter2 = HexMetrics.Perturb(roadCenter2);
+
+        Transform instance = Instantiate(bridge);
+        instance.localPosition = (roadcenter1 + roadCenter2) * 0.5f;
+        instance.forward = roadCenter2 - roadcenter1;
+        float length = Vector3.Distance(roadcenter1, roadCenter2);
+        instance.localScale = new Vector3(1f, 1f, length * (1f / HexMetrics.bridgeDesignLength));
+        instance.SetParent(container, false);
+    }
+
+    /// <summary>
+    /// Creates a special feature on the current hex depending on which one is assigned in the cell
+    /// </summary>
+    /// <param name="cell"> Current cell </param>
+    /// <param name="position"> Position of cell </param>
+    public void AddSpecialFeature(HexCell cell, Vector3 position) {
+        Transform instance = Instantiate(special[cell.SpecialIndex - 1]);
+        instance.localPosition = HexMetrics.Perturb(position);
+        HexHash hash = HexMetrics.SampleHashGrid(position);
+        instance.localRotation = Quaternion.Euler(0f, 360f * hash.e, 0f);
+        instance.SetParent(container, false);
 
     }
 }

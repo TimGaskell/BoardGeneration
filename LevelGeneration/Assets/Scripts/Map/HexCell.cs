@@ -14,6 +14,7 @@ public class HexCell : MonoBehaviour {
 	int urbanLevel, farmLevel, plantLevel;
 
 	bool walled;
+	int specialIndex;
 
 	public RectTransform uiRect;
 
@@ -279,11 +280,13 @@ public class HexCell : MonoBehaviour {
 
 		hasOutgoingRiver = true;
 		outgoingRiver = direction;
+		specialIndex = 0;
 	
 
 		neighbor.RemoveIncomingRiver();
 		neighbor.hasIncomingRiver = true;
 		neighbor.incomingRiver = direction.Opposite();
+		neighbor.specialIndex = 0;
 
 		SetRoad((int)direction, false);
 	}
@@ -362,7 +365,7 @@ public class HexCell : MonoBehaviour {
 	/// <param name="direction">  Direction of the hexagon vertex e.g. NE, SE etc </param>
 	public void AddRoad(HexDirection direction)
 	{
-		if(!roads[(int)direction] && !HasRiverThroughEdge(direction) && GetElevationDifference(direction) <= 1)
+		if(!roads[(int)direction] && !HasRiverThroughEdge(direction) && GetElevationDifference(direction) <= 1 && !IsSpecial && !GetNeighbor(direction).IsSpecial)
 		{
 			SetRoad((int)direction, true);
 		}
@@ -519,6 +522,32 @@ public class HexCell : MonoBehaviour {
 				walled = value;
 				Refresh();
 			}
+		}
+	}
+
+	/// <summary>
+	/// Get returns the special index for the building in the hex feature array
+	/// Set changes the value of the index if there is no river. Removes any roads on this hex and refreshes this chunk
+	/// </summary>
+	public int SpecialIndex {
+		get {
+			return specialIndex;
+		}
+		set {
+			if(specialIndex != value && !HasRiver) {
+				specialIndex = value;
+				RemoveRoads();
+				RefreshSelfOnly();
+			}
+		}
+	}
+
+	/// <summary>
+	/// Determines if there is a special building to be drawn on this hex
+	/// </summary>
+	public bool IsSpecial {
+		get {
+			return specialIndex > 0;
 		}
 	}
 	

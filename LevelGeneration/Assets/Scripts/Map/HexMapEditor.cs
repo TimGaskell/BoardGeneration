@@ -10,10 +10,10 @@ public class HexMapEditor : MonoBehaviour {
 	private Color activeColor;
 	int activeElevation;
 	int activeWaterLevel;
-	int activeUrbanLevel, activeFarmLevel, activePlantLevel;
+	int activeUrbanLevel, activeFarmLevel, activePlantLevel, activeSpecialIndex;
 	bool applyColor;
 	bool applyElevation = true;
-	bool applyUrbanLevel, applyFarmLevel, applyPlantLevel;
+	bool applyUrbanLevel, applyFarmLevel, applyPlantLevel, applySpecialIndex;
 	bool applyWaterLevel = true;
 
 	bool isDrag;
@@ -100,6 +100,9 @@ public class HexMapEditor : MonoBehaviour {
 			}
 			if (applyPlantLevel) {
 				cell.PlantLevel = activePlantLevel;
+			}
+			if (applySpecialIndex) {
+				cell.SpecialIndex = activeSpecialIndex;
 			}
 			if (riverMode == OptionalToggle.No)
 			{
@@ -312,5 +315,21 @@ public class HexMapEditor : MonoBehaviour {
 	/// <param name="mode">  On, off or ignore  </param>
 	public void SetWalledMode (int mode) {
 		walledMode = (OptionalToggle)mode;
+	}
+
+	/// <summary>
+	/// UI toggle for allowing special building to be created 
+	/// </summary>
+	/// <param name="toggle"> On or off </param>
+	public void SetApplySpecialIndex (bool toggle) {
+		applySpecialIndex = toggle;
+	}
+
+	/// <summary>
+	/// UI slider for changing the index of which special building to create
+	/// </summary>
+	/// <param name="index"> index of special array </param>
+	public void SetSpecialIndex(float index) {
+		activeSpecialIndex = (int)index;
 	}
 }
