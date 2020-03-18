@@ -1,10 +1,11 @@
 ﻿using UnityEngine;
+using System.IO;
 
 public class HexCell : MonoBehaviour {
 
 	public HexCoordinates coordinates;
 
-	Color Color;
+	int terrainTypeIndex;
 
 	bool hasIncomingRiver, hasOutgoingRiver;
 	HexDirection incomingRiver, outgoingRiver;
@@ -80,15 +81,7 @@ public class HexCell : MonoBehaviour {
 				return;
 
 			elevation = value;
-			Vector3 Position = transform.localPosition;
-			Position.y = value * HexMetrics.elevationStep;
-			Position.y += (HexMetrics.SampleNoise(Position).y * 2f - 1f) * HexMetrics.elevationPerturbStrength;
-			transform.localPosition = Position;
-
-			Vector3 uiPosition = uiRect.localPosition;
-			uiPosition.z = -Position.y;
-			uiRect.localPosition = uiPosition;
-
+			RefreshPosition();
 			ValidateRivers();
 		
 			for (int i = 0; i<roads.Length; i++)
@@ -102,18 +95,35 @@ public class HexCell : MonoBehaviour {
 		}
 	}
 
+	void RefreshPosition() {
+		Vector3 Position = transform.localPosition;
+		Position.y = elevation * HexMetrics.elevationStep;
+		Position.y += (HexMetrics.SampleNoise(Position).y * 2f - 1f) * HexMetrics.elevationPerturbStrength;
+		transform.localPosition = Position;
+
+		Vector3 uiPosition = uiRect.localPosition;
+		uiPosition.z = -Position.y;
+		uiRect.localPosition = uiPosition;
+	}
+
 	/// <summary>
 	/// Either returns the Color value of this Hex or when its color is changed, set the new color value and redraw the Hexcell
 	/// </summary>
 	public Color color {
 		get {
-			return Color;
+			return HexMetrics.colors[terrainTypeIndex];
+		}
+	}
+
+	public int TerrainTypeIndex {
+		get {
+			return terrainTypeIndex;
 		}
 		set {
-			if (Color == value)
-				return;
-			Color = value;
-			Refresh();
+			if(terrainTypeIndex != value) {
+				terrainTypeIndex = value;
+				Refresh();
+			}
 		}
 	}
 
@@ -548,6 +558,51 @@ public class HexCell : MonoBehaviour {
 	public bool IsSpecial {
 		get {
 			return specialIndex > 0;
+		}
+	}
+
+	public void Save(BinaryWriter writer) {
+
+		writer.Write((byte)terrainTypeIndex);
+		writer.Write((byte)elevation);
+		writer.Write((byte)waterLevel);
+		writer.Write((byte)urbanLevel);
+		writer.Write((byte)farmLevel);
+		writer.Write((byte)plantLevel);
+		writer.Write((byte)specialIndex);
+		writer.Write(walled);
+
+		writer.Write(hasIncomingRiver);
+		writer.Write((byte)incomingRiver);
+
+		writer.Write(hasOutgoingRiver);
+		writer.Write((byte)outgoingRiver);
+
+		for (int i = 0; i < roads.Length; i++) {
+			writer.Write(roads[i]);
+		}
+	}
+
+	public void Load(BinaryReader reader) {
+
+		terrainTypeIndex = reader.ReadByte();
+		elevation = reader.ReadByte();
+		RefreshPosition();
+		waterLevel = reader.ReadByte();
+		urbanLevel = reader.ReadByte();
+		farmLevel = reader.ReadByte();
+		plantLevel = reader.ReadByte();
+		specialIndex = reader.ReadByte();
+		walled = reader.ReadBoolean();
+
+		hasIncomingRiver = reader.ReadBoolean();
+		incomingRiver = (HexDirection)reader.ReadByte();
+
+		hasOutgoingRiver = reader.ReadBoolean();
+		outgoingRiver = (HexDirection)reader.ReadByte();
+
+		for (int i = 0; i < roads.Length; i++) {
+			roads[i] = reader.ReadBoolean();
 		}
 	}
 	

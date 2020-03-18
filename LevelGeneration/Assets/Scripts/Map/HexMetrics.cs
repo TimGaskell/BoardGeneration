@@ -63,6 +63,8 @@ public static class HexMetrics {
 
 	public const float hashGridScale = 0.25f;
 
+	public static Color[] colors;
+
 	static HexHash[] hashGrid;
 
 
