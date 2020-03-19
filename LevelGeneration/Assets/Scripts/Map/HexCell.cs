@@ -561,6 +561,10 @@ public class HexCell : MonoBehaviour {
 		}
 	}
 
+	/// <summary>
+	/// Writes all data related to creating a cell as a byte data type. Writes it to a binary file 
+	/// </summary>
+	/// <param name="writer"> Passed in binary writer </param>
 	public void Save(BinaryWriter writer) {
 
 		writer.Write((byte)terrainTypeIndex);
@@ -583,6 +587,10 @@ public class HexCell : MonoBehaviour {
 		}
 	}
 
+	/// <summary>
+	/// Reads from the binary file to assign cell data to this current cell. 
+	/// </summary>
+	/// <param name="reader"> Binary reader used to read the binary file</param>
 	public void Load(BinaryReader reader) {
 
 		terrainTypeIndex = reader.ReadByte();

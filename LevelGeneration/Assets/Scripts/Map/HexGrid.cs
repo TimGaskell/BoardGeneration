@@ -197,12 +197,20 @@ public class HexGrid : MonoBehaviour {
 		}
 	}
 
+	/// <summary>
+	/// Calls every individual cell to save their data via a binary writer
+	/// </summary>
+	/// <param name="writer"> Binary Writer passed through </param>
 	public void Save(BinaryWriter writer) {
 		for(int i = 0; i < cells.Length; i++) {
 			cells[i].Save(writer);
 		}
 	}
 
+	/// <summary>
+	/// Each cell reads data from the binary reader
+	/// </summary>
+	/// <param name="reader"> Binary reader passed through </param>
 	public void Load(BinaryReader reader) {
 		for (int i = 0; i < cells.Length; i++) {
 			cells[i].Load(reader);

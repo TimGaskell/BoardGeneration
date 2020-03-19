@@ -323,6 +323,10 @@ public class HexMapEditor : MonoBehaviour {
 		activeTerrainTypeIndex = index;
 	}
 
+	/// <summary>
+	/// UI Element used to create a save file as a binary format of all the hex cell data on the map.
+	/// Starts off with a header of 0 to denote the version type of this saving system.
+	/// </summary>
 	public void Save() {
 		string path = Path.Combine(Application.persistentDataPath, "test.map");
 		using (BinaryWriter writer = new BinaryWriter(File.Open(path, FileMode.Create))) {
@@ -332,6 +336,11 @@ public class HexMapEditor : MonoBehaviour {
 		}
 	}
 
+	/// <summary>
+	/// UI element used to reading the previously created saved binary file. Each hex grid and cell will read the data and assign its cells with the information needed
+	/// to recreate the pervious map.
+	/// If the header is not 0 then it was made with a different version and shouldnt be loaded.
+	/// </summary>
 	public void Load() {
 
 		string path = Path.Combine(Application.persistentDataPath, "test.map");
