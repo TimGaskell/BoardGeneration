@@ -14,8 +14,11 @@ public class HexMapCamera : MonoBehaviour
     float rotationAngle;
     public HexGrid grid;
 
+    static HexMapCamera instace;
+
     private void Awake()
     {
+        instace = this;
         swivel = transform.GetChild(0);
         stick = swivel.GetChild(0);
     }
@@ -102,14 +105,26 @@ public class HexMapCamera : MonoBehaviour
     /// <returns> vector3 for the camera position </returns>
     Vector3 ClampPosition(Vector3 position)
     {
-        float xMax = (grid.chunkCountX * HexMetrics.chunkSizeX -0.5f) * (2f * HexMetrics.innerRadius);
+        float xMax = (grid.cellCountX  -0.5f) * (2f * HexMetrics.innerRadius);
         position.x = Mathf.Clamp(position.x, 0f, xMax);
 
-        float zMax = (grid.chunkCountZ * HexMetrics.chunkSizeZ - 1) * (1.5f * HexMetrics.outerRadius);
+        float zMax = (grid.cellCountZ - 1) * (1.5f * HexMetrics.outerRadius);
         position.z = Mathf.Clamp(position.z, 0f, zMax);
         
         return position;
     }
+
+    public static bool Locked {
+
+        set {
+            instace.enabled = !value;
+        }
+    }
+
+    public static void ValidatePosition() {
+        instace.AdjustPosition(0f, 0f);
+    }
+
 }
 
 
