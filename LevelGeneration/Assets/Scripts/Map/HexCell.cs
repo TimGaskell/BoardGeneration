@@ -615,11 +615,18 @@ public class HexCell : MonoBehaviour {
 		}
 	}
 
+	/// <summary>
+	/// Updates the text label to display the distance if it has been changed from max value
+	/// </summary>
 	void UpdateDistanceLabel() {
 		Text label = uiRect.GetComponent<Text>();
 		label.text =  distance ==  int.MaxValue ? "" : distance.ToString();
 	}
 
+	/// <summary>
+	/// Get: returns the distance to this cell from a chosen cell.
+	/// Set: Changes the distance value to a new value. Updates the text label to display new distance.
+	/// </summary>
 	public int Distance {
 		get {
 			return distance;

@@ -328,6 +328,10 @@ public class HexMapEditor : MonoBehaviour {
 		activeTerrainTypeIndex = index;
 	}
 
+	/// <summary>
+	/// UI element that enables or disables a hex outline of each cell.
+	/// </summary>
+	/// <param name="visible"> bool value of on or off </param>
 	public void ShowGrid(bool visible) {
 		if (visible) {
 			terrainMaterial.EnableKeyword("GRID_ON");
@@ -336,7 +340,10 @@ public class HexMapEditor : MonoBehaviour {
 			terrainMaterial.DisableKeyword("GRID_ON");
 		}
 	}
-
+	/// <summary>
+	/// UI element that toggles the user can edit the map and displays the text distance of all cells.
+	/// </summary>
+	/// <param name="toggle"> bool value of on or off </param>
 	public void SetEditMode(bool toggle) {
 		editMode = toggle;
 		hexGrid.ShowUI(!toggle);

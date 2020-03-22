@@ -83,7 +83,11 @@ public struct HexCoordinates {
 	}
 
 
-
+	/// <summary>
+	/// Finds the distance between two cells. Prevents it from being a negative number
+	/// </summary>
+	/// <param name="other"> Another hex cells hex coordinates </param>
+	/// <returns> Distance between two cells </returns>
 	public int DistanceTo (HexCoordinates other) {
 		return
 		((x < other.x ? other.x - x : x - other.x) +

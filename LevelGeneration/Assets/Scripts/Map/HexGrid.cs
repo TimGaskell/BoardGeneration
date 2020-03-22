@@ -258,11 +258,27 @@ public class HexGrid : MonoBehaviour {
 		}
 	}
 
+	/// <summary>
+	/// Starts the searching algorithm of cell distances
+	/// </summary>
+	/// <param name="cell"> Starting cell of search </param>
 	public void FindDistanceTo(HexCell cell) {
 		StopAllCoroutines();
 		StartCoroutine(Search(cell));
 	}
 
+	/// <summary>
+	/// Breadth first search of distances to each cell starting from a selected cell.
+	/// Loops through each cells neighbors and determines how far they are from the origin. Adds on distance from its origin neighbour and so on
+	/// Each cell is looked at individually if:
+	/// - They have a neighbor cell
+	/// - neighbor inst underwater
+	/// - Neighbor inst a cliff face
+	/// If the neighbor has a road going through it, its distance is reduced
+	/// If the neighbor is a flat the distance is 5, 10 if terrace.
+	/// </summary>
+	/// <param name="cell"> Starting cell </param>
+	/// <returns> Distance from origin cell to all other cells</returns>
 	IEnumerator Search(HexCell cell) {
 
 		for (int i = 0; i < cells.Length; i++) {
