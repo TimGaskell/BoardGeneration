@@ -6,6 +6,10 @@ public class HexMapEditor : MonoBehaviour {
 
 	public HexGrid hexGrid;
 
+	public Material terrainMaterial;
+
+	bool editMode;
+
 	int activeElevation;
 	int activeWaterLevel;
 	int activeUrbanLevel, activeFarmLevel, activePlantLevel, activeSpecialIndex;
@@ -30,7 +34,8 @@ public class HexMapEditor : MonoBehaviour {
 	OptionalToggle riverMode, roadMode, walledMode;
 
 	void Awake () {
-		
+
+		terrainMaterial.DisableKeyword("GRID_ON");
 	}
 
 	void Update () {
@@ -63,7 +68,12 @@ public class HexMapEditor : MonoBehaviour {
 			{
 				isDrag = false;
 			}
-			EditCells(CurrentCell);
+			if (editMode) {
+				EditCells(CurrentCell);
+			}
+			else {
+				hexGrid.FindDistanceTo(CurrentCell);
+			}
 			previousCell = CurrentCell;
 		}
 		else
@@ -183,15 +193,6 @@ public class HexMapEditor : MonoBehaviour {
 	public void SetBrushSize(float size)
 	{
 		brushSize = (int)size;
-	}
-
-	/// <summary>
-	/// UI toggle for showing label UI elements on the hexes
-	/// </summary>
-	/// <param name="visible"> Bool for switching it on or off </param>
-	public void ShowUI(bool visible)
-	{
-		hexGrid.ShowUI(visible);
 	}
 
 	/// <summary>
@@ -327,5 +328,18 @@ public class HexMapEditor : MonoBehaviour {
 		activeTerrainTypeIndex = index;
 	}
 
+	public void ShowGrid(bool visible) {
+		if (visible) {
+			terrainMaterial.EnableKeyword("GRID_ON");
+		}
+		else {
+			terrainMaterial.DisableKeyword("GRID_ON");
+		}
+	}
+
+	public void SetEditMode(bool toggle) {
+		editMode = toggle;
+		hexGrid.ShowUI(!toggle);
+	}
 	
 }
