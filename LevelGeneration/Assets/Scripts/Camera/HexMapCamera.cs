@@ -14,11 +14,12 @@ public class HexMapCamera : MonoBehaviour
     float rotationAngle;
     public HexGrid grid;
 
-    static HexMapCamera instace;
+    static HexMapCamera instance;
 
     private void Awake()
     {
-        instace = this;
+        instance = this;
+        HexMapCamera.Locked = true;
         swivel = transform.GetChild(0);
         stick = swivel.GetChild(0);
     }
@@ -36,7 +37,6 @@ public class HexMapCamera : MonoBehaviour
         {
             AdjustRotation(rotationDelta);
         }
-
 
         float xDelta = Input.GetAxis("Horizontal");
         float zDelta = Input.GetAxis("Vertical");
@@ -114,15 +114,21 @@ public class HexMapCamera : MonoBehaviour
         return position;
     }
 
+    /// <summary>
+    /// Setter for allowing the camera to move or not by turning off this script
+    /// </summary>
     public static bool Locked {
 
         set {
-            instace.enabled = !value;
+            instance.enabled = !value;
         }
     }
 
+    /// <summary>
+    /// Readjusts the camera so that it moves back to the origin point of the scene. Used for when creating a new map
+    /// </summary>
     public static void ValidatePosition() {
-        instace.AdjustPosition(0f, 0f);
+        instance.AdjustPosition(0f, 0f);
     }
 
 }

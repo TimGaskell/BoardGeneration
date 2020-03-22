@@ -7,8 +7,9 @@ public class HexMesh : MonoBehaviour {
 
 	Mesh hexMesh;
 	public bool useCollider, useColors, useUVCoordinates, useUV2Coordinates;
+	public bool useTerrainTypes;
 
-	[NonSerialized] List<Vector3> vertices = new List<Vector3>();
+	[NonSerialized] List<Vector3> vertices, terrainTypes;
 	[NonSerialized] List<Color> colors = new List<Color>();
 	[NonSerialized] List<int> triangles = new List<int>();
 	[NonSerialized] List<Vector2> uvs, uv2s;
@@ -267,6 +268,9 @@ public class HexMesh : MonoBehaviour {
 		if (useUV2Coordinates) {
 			uv2s = ListPool<Vector2>.Get();
 		}
+		if (useTerrainTypes) {
+			terrainTypes = ListPool<Vector3>.Get();
+		}
 		triangles = ListPool<int>.Get();
 	}
 
@@ -293,6 +297,10 @@ public class HexMesh : MonoBehaviour {
 			hexMesh.SetUVs(1, uv2s);
 			ListPool<Vector2>.Add(uv2s);
 		}
+		if (useTerrainTypes) {
+			hexMesh.SetUVs(2, terrainTypes);
+			ListPool<Vector3>.Add(terrainTypes);
+		}
 
 		hexMesh.SetTriangles(triangles, 0);
 		ListPool<int>.Add(triangles);
@@ -301,6 +309,34 @@ public class HexMesh : MonoBehaviour {
 		if (useCollider) { 
 			meshCollider.sharedMesh = hexMesh;
 		} 
+	}
+
+	/// <summary>
+	/// Adds a vector 3 which contains the different terrain types for the bottom hex, left hex and right hex.
+	/// X = bottom hex
+	/// Y = left hex
+	/// Z = right hex
+	/// </summary>
+	/// <param name="type"> Vector 3 containing the terrain types of the hexes </param>
+	public void AddTriangleTerrainTypes(Vector3 type) {
+		terrainTypes.Add(type);
+		terrainTypes.Add(type);
+		terrainTypes.Add(type);
+	}
+
+	/// <summary>
+	/// Adds a vector 3 which contains the different terrain types for the bottom hex, left hex and right hex.
+	/// X = bottom hex
+	/// Y = left hex
+	/// Z = right hex
+	/// </summary>
+	/// <param name="type"> Vector 3 containing the terrain types of the hexes </param>
+	public void AddQuadTerrainTypes (Vector3 types) {
+		terrainTypes.Add(types);
+		terrainTypes.Add(types);
+		terrainTypes.Add(types);
+		terrainTypes.Add(types);
+
 	}
 
 }

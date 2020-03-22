@@ -2613,7 +2613,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Blue
+  m_Text: Stone
 --- !u!222 &358500429
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -4260,7 +4260,7 @@ GameObject:
   - component: {fileID: 584997468}
   - component: {fileID: 584997469}
   m_Layer: 5
-  m_Name: Toggle Green
+  m_Name: Toggle Grass
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4514,7 +4514,7 @@ GameObject:
   - component: {fileID: 609898559}
   - component: {fileID: 609898560}
   m_Layer: 5
-  m_Name: Toggle White
+  m_Name: Toggle Mud
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4534,7 +4534,7 @@ RectTransform:
   - {fileID: 587757293}
   - {fileID: 1368817616}
   m_Father: {fileID: 1327306878}
-  m_RootOrder: 4
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -5036,12 +5036,6 @@ MonoBehaviour:
     type: 3}
   cellLabelPrefab: {fileID: 9028762901795588590, guid: b63404350447adb41a1793749d4ac892,
     type: 3}
-  colors:
-  - {r: 0.8773585, g: 0.83035105, b: 0.120016046, a: 1}
-  - {r: 0.09369531, g: 0.745283, b: 0.03163936, a: 1}
-  - {r: 0, g: 0.057555437, b: 1, a: 1}
-  - {r: 1, g: 1, b: 1, a: 1}
-  - {r: 0.8584906, g: 0.6603267, b: 0.3037113, a: 1}
   noiseSource: {fileID: 2800000, guid: 9ed03c1acf1119b41a24c6dbfb6f17cb, type: 3}
   chunkPrefab: {fileID: 3815206564724452478, guid: 66f3787ae873de949840dbe410745f08,
     type: 3}
@@ -8958,8 +8952,8 @@ RectTransform:
   - {fileID: 1703689461}
   - {fileID: 584997468}
   - {fileID: 1439719097}
-  - {fileID: 609898559}
   - {fileID: 1338048669}
+  - {fileID: 609898559}
   m_Father: {fileID: 408929546}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -9265,7 +9259,7 @@ GameObject:
   - component: {fileID: 1338048669}
   - component: {fileID: 1338048670}
   m_Layer: 5
-  m_Name: Toggle Orange
+  m_Name: Toggle Snow
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -9285,7 +9279,7 @@ RectTransform:
   - {fileID: 1791108227}
   - {fileID: 1349442143}
   m_Father: {fileID: 1327306878}
-  m_RootOrder: 5
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -9422,9 +9416,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 'Orange
-
-'
+  m_Text: Snow
 --- !u!222 &1349442145
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -9579,7 +9571,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: White
+  m_Text: Mud
 --- !u!222 &1368817618
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -10230,7 +10222,7 @@ GameObject:
   - component: {fileID: 1439719097}
   - component: {fileID: 1439719098}
   m_Layer: 5
-  m_Name: Toggle Blue
+  m_Name: Toggle Stone
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -10812,7 +10804,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Yellow
+  m_Text: Sand
 --- !u!222 &1495628179
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -12108,7 +12100,7 @@ GameObject:
   - component: {fileID: 1703689461}
   - component: {fileID: 1703689462}
   m_Layer: 5
-  m_Name: Toggle Yellow
+  m_Name: Toggle Sand
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -12746,7 +12738,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Green
+  m_Text: Grass
 --- !u!222 &1780078817
 CanvasRenderer:
   m_ObjectHideFlags: 0

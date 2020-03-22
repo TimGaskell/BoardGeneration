@@ -15,6 +15,11 @@ public class SaveLoadMenu : MonoBehaviour
 
     bool saveMode;
 
+    /// <summary>
+    /// Used for opening the save load menu UI. Determines if the game is saving or loading and edits the text and buttons appropriately.
+    /// Fills the item menu with all maps that have been saved and locks the camera from moving.
+    /// </summary>
+    /// <param name="saveMode"></param>
     public void Open(bool saveMode) {
         this.saveMode = saveMode;
         if (saveMode) {
@@ -30,11 +35,18 @@ public class SaveLoadMenu : MonoBehaviour
         HexMapCamera.Locked = true;
     }
 
+    /// <summary>
+    /// Used for closing the save load menu UI. Unlocks the camera so it can move.
+    /// </summary>
     public void Close() {
         gameObject.SetActive(false);
         HexMapCamera.Locked = false;
     }
 
+    /// <summary>
+    /// Uses the name input text of the UI to create a path leading to where saved maps can be found. Only returns if there is more than 1 saved map in that location
+    /// </summary>
+    /// <returns> String path of file location of map name in name input </returns>
     string GetSelectedPath() {
         string mapName = nameInput.text;
         if(mapName.Length == 0) {
@@ -43,7 +55,10 @@ public class SaveLoadMenu : MonoBehaviour
         return Path.Combine(Application.persistentDataPath, mapName + ".map");
     }
 
-
+    /// <summary>
+    /// UI action element that either saves or loads a map based on its file path.
+    /// If a file name doesn't exist in the save folder then it will do nothing.
+    /// </summary>
     public void Action() {
         string path = GetSelectedPath();
         if(path == null) {
@@ -58,10 +73,19 @@ public class SaveLoadMenu : MonoBehaviour
         Close();
     }
 
+    /// <summary>
+    /// When a map name button is pressed. Assign that maps name to the name input text
+    /// </summary>
+    /// <param name="name"></param>
     public void SelectItem(string name) {
         nameInput.text = name;
     }
 
+    /// <summary>
+    /// Refreshes the list by destroying old map name game objects.
+    /// Fills the List of all .map files it can find in the local save area as button game objects .Sorts them by alphabetical order.
+    /// Assigns the button the name of the map it is holding
+    /// </summary>
     void FillList() {
         
         for (int i = 0; i < listContent.childCount; i++) {
@@ -77,6 +101,10 @@ public class SaveLoadMenu : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// UI element for deleting a file based on the name inputed in the name input UI element. Refreshes the list.
+    /// If there is no file that exists of that name. Return from function.
+    /// </summary>
     public void Delete() {
         string path = GetSelectedPath();
         if (path == null) {

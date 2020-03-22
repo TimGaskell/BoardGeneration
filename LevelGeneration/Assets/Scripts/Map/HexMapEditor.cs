@@ -319,6 +319,10 @@ public class HexMapEditor : MonoBehaviour {
 		activeSpecialIndex = (int)index;
 	}
 
+	/// <summary>
+	/// UI element for setting the type of terrain that is currently selected.
+	/// </summary>
+	/// <param name="index"> Index value for terrain type of cell </param>
 	public void SetTerrainTypeIndex(int index) {
 		activeTerrainTypeIndex = index;
 	}

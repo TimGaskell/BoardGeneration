@@ -95,6 +95,9 @@ public class HexCell : MonoBehaviour {
 		}
 	}
 
+	/// <summary>
+	/// Refreshes the elevation of a hex when its value is changed.
+	/// </summary>
 	void RefreshPosition() {
 		Vector3 Position = transform.localPosition;
 		Position.y = elevation * HexMetrics.elevationStep;
@@ -107,14 +110,9 @@ public class HexCell : MonoBehaviour {
 	}
 
 	/// <summary>
-	/// Either returns the Color value of this Hex or when its color is changed, set the new color value and redraw the Hexcell
+	/// Get: returns the terrain type index of the current cell. Index references an array of terrain types e.g. stone, snow etc. 
+	/// Set: if value is different, change terrain type index to new value. Refresh chunk
 	/// </summary>
-	public Color color {
-		get {
-			return HexMetrics.colors[terrainTypeIndex];
-		}
-	}
-
 	public int TerrainTypeIndex {
 		get {
 			return terrainTypeIndex;

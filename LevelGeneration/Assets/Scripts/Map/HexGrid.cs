@@ -14,8 +14,6 @@ public class HexGrid : MonoBehaviour {
 
 	HexCell[] cells;
 
-	public Color[] colors;
-
 	public Texture2D noiseSource;
 
 	public HexGridChunk chunkPrefab;
@@ -32,11 +30,17 @@ public class HexGrid : MonoBehaviour {
 
 		HexMetrics.noiseSource = noiseSource;
 		HexMetrics.InitializeHashGrid(seed);
-		HexMetrics.colors = colors;
 		CreateMap(cellCountX,cellCountZ);
 
 	}
 
+	/// <summary>
+	/// Function used for creating a new map into the scene. The map size needs to be an appropriate number so that each chunk contains the same amount of cells in each.
+	/// Destroys all previous chunks in the scene and creates them again along with new cells.
+	/// </summary>
+	/// <param name="x"> How many cells in the X direction </param>
+	/// <param name="z"> How many cells in the Y direction </param>
+	/// <returns></returns>
 	public bool CreateMap(int x, int z) {
 		
 		if( x <= 0 || x % HexMetrics.chunkSizeX != 0 || 
@@ -64,7 +68,7 @@ public class HexGrid : MonoBehaviour {
 		if (!HexMetrics.noiseSource) {
 			HexMetrics.noiseSource = noiseSource;
 			HexMetrics.InitializeHashGrid(seed);
-			HexMetrics.colors = colors;
+		
 		}
 	}
 
