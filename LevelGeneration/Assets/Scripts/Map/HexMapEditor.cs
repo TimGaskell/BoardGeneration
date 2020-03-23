@@ -22,7 +22,7 @@ public class HexMapEditor : MonoBehaviour {
 
 	bool isDrag;
 	HexDirection dragDirection;
-	HexCell previousCell;
+	HexCell previousCell, searchFromCell, searchToCell;
 
 	int brushSize;
 
@@ -71,8 +71,19 @@ public class HexMapEditor : MonoBehaviour {
 			if (editMode) {
 				EditCells(CurrentCell);
 			}
-			else {
-				hexGrid.FindDistanceTo(CurrentCell);
+			else if (Input.GetKey(KeyCode.LeftShift) && searchToCell != CurrentCell) {
+				if (searchFromCell) {
+					searchFromCell.DisableHighLight();
+				}
+				searchFromCell = CurrentCell;
+				searchFromCell.EnableHighlight(Color.blue);
+				if (searchToCell) {
+					hexGrid.FindPath(searchFromCell, searchToCell);
+				}
+			}
+			else if(searchFromCell && searchFromCell != CurrentCell) {
+				searchToCell = CurrentCell;
+				hexGrid.FindPath(searchFromCell, searchToCell);
 			}
 			previousCell = CurrentCell;
 		}

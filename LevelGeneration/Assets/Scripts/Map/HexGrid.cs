@@ -21,6 +21,8 @@ public class HexGrid : MonoBehaviour {
 	public HexGridChunk chunkPrefab;
 	HexGridChunk[] chunks;
 
+	HexCellPriorityQueue searchFrontier;
+
 	public int seed;
 
 
@@ -262,36 +264,57 @@ public class HexGrid : MonoBehaviour {
 	/// Starts the searching algorithm of cell distances
 	/// </summary>
 	/// <param name="cell"> Starting cell of search </param>
-	public void FindDistanceTo(HexCell cell) {
+	public void FindPath(HexCell fromCell, HexCell toCell) {
 		StopAllCoroutines();
-		StartCoroutine(Search(cell));
+		StartCoroutine(Search(fromCell,toCell));
 	}
 
+
 	/// <summary>
-	/// Breadth first search of distances to each cell starting from a selected cell.
-	/// Loops through each cells neighbors and determines how far they are from the origin. Adds on distance from its origin neighbour and so on
-	/// Each cell is looked at individually if:
-	/// - They have a neighbor cell
-	/// - neighbor inst underwater
-	/// - Neighbor inst a cliff face
-	/// If the neighbor has a road going through it, its distance is reduced
-	/// If the neighbor is a flat the distance is 5, 10 if terrace.
+	/// Used for finding the most optimal path to reaching an end point by comparing distances and hazards that lead to that point.
+	/// It weights each hex based on it distance value and its position being closer to the end point.
+	/// The hexes with the most progress in these categories get assessed first to minimize the amount of loops of the method.
+	/// Once it finds the end hex, it works backwards with hexes remembering which way they came to work to the origin point. 
 	/// </summary>
-	/// <param name="cell"> Starting cell </param>
-	/// <returns> Distance from origin cell to all other cells</returns>
-	IEnumerator Search(HexCell cell) {
+	/// <param name="fromCell"> Origin hex </param>
+	/// <param name="toCell"> Destination hex </param>
+	/// <returns> Creates path towards end destination </returns>
+	IEnumerator Search(HexCell fromCell, HexCell toCell) {
+
+		if(searchFrontier == null) {
+			searchFrontier = new HexCellPriorityQueue();
+		}
+		else {
+			searchFrontier.Clear();
+		}
 
 		for (int i = 0; i < cells.Length; i++) {
 			cells[i].Distance = int.MaxValue; //Set as max value to show we haven't visited cell yet.
+			cells[i].DisableHighLight();
 		}
+		fromCell.EnableHighlight(Color.blue);
+		toCell.EnableHighlight(Color.red);
+
 		WaitForSeconds delay = new WaitForSeconds(1 / 60f);
-		List<HexCell> frontier = new List<HexCell>();
-		cell.Distance = 0;
-		frontier.Add(cell);
-		while (frontier.Count > 0) {
+		
+		fromCell.Distance = 0;
+
+		searchFrontier.Enqueue(fromCell);
+		while (searchFrontier.Count > 0) {
+			
 			yield return delay;
-			HexCell current = frontier[0];
-			frontier.RemoveAt(0);
+			HexCell current = searchFrontier.Dequeue();		
+
+			if(current == toCell) {
+				current = current.PathFrom;
+				while(current != fromCell) {
+					current.EnableHighlight(Color.white);
+					current = current.PathFrom;
+				}
+
+				break;
+			}
+
 			for (HexDirection d = HexDirection.NE; d <= HexDirection.NW; d++) {
 				HexCell neighbour = current.GetNeighbor(d);
 
@@ -322,14 +345,17 @@ public class HexGrid : MonoBehaviour {
 
 				if(neighbour.Distance == int.MaxValue) {
 					neighbour.Distance = distance;
-					frontier.Add(neighbour);
+					neighbour.PathFrom = current;
+					neighbour.SearchHeuristic = neighbour.coordinates.DistanceTo(toCell.coordinates);
+					searchFrontier.Enqueue(neighbour);
 				}
 				else if(distance < neighbour.Distance) {
+					int oldPriority = neighbour.SearchPriority;
 					neighbour.Distance = distance;
+					neighbour.PathFrom = current;
+					searchFrontier.Change(neighbour, oldPriority);
 				}
-				
-				frontier.Sort((x, y) => x.Distance.CompareTo(y.Distance));
-				
+							
 			}
 
 		}

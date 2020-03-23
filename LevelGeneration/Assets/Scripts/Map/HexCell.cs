@@ -9,6 +9,11 @@ public class HexCell : MonoBehaviour {
 	int terrainTypeIndex;
 
 	int distance;
+	public HexCell PathFrom { get; set; }
+
+	public HexCell NextWithSamePriority { get; set; }
+
+	public int SearchHeuristic { get; set; }
 
 	bool hasIncomingRiver, hasOutgoingRiver;
 	HexDirection incomingRiver, outgoingRiver;
@@ -634,6 +639,32 @@ public class HexCell : MonoBehaviour {
 		set {
 			distance = value;
 			UpdateDistanceLabel();
+		}
+	}
+
+	/// <summary>
+	/// Disables UI element for highlight around hex that is selected
+	/// </summary>
+	public void DisableHighLight() {
+		Image highlight = uiRect.GetChild(0).GetComponent<Image>();
+		highlight.enabled = false;
+	}
+
+	/// <summary>
+	/// Enables UI element for highlight around hex that is selected. Allows different colors
+	/// </summary>
+	public void EnableHighlight(Color color) {
+		Image highlight = uiRect.GetChild(0).GetComponent<Image>();
+		highlight.color = color;
+		highlight.enabled = true;
+	}
+
+	/// <summary>
+	/// Returns the priority of a cell based on its distance of Hex and the distance it makes towards the target hex
+	/// </summary>
+	public int SearchPriority {
+		get {
+			return distance + SearchHeuristic;
 		}
 	}
 	
