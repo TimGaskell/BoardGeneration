@@ -13,6 +13,8 @@ public class HexCell : MonoBehaviour {
 
 	public HexCell NextWithSamePriority { get; set; }
 
+	public int SearchPhase { get; set; }
+
 	public int SearchHeuristic { get; set; }
 
 	bool hasIncomingRiver, hasOutgoingRiver;
@@ -621,11 +623,12 @@ public class HexCell : MonoBehaviour {
 	}
 
 	/// <summary>
-	/// Updates the text label to display the distance if it has been changed from max value
+	/// Changes the Label UI text to whatever is inputed.
 	/// </summary>
-	void UpdateDistanceLabel() {
-		Text label = uiRect.GetComponent<Text>();
-		label.text =  distance ==  int.MaxValue ? "" : distance.ToString();
+	/// <param name="text"> New text for label </param>
+	public void SetLabel(string text) {
+		UnityEngine.UI.Text label = uiRect.GetComponent<Text>();
+		label.text = text;
 	}
 
 	/// <summary>
@@ -638,7 +641,6 @@ public class HexCell : MonoBehaviour {
 		}
 		set {
 			distance = value;
-			UpdateDistanceLabel();
 		}
 	}
 

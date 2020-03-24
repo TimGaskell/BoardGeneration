@@ -16,6 +16,9 @@ public class HexGrid : MonoBehaviour {
 
 	HexCell[] cells;
 
+	HexCell currentPathFrom, currentPathTo;
+	bool currentPathExists;
+
 	public Texture2D noiseSource;
 
 	public HexGridChunk chunkPrefab;
@@ -24,6 +27,9 @@ public class HexGrid : MonoBehaviour {
 	HexCellPriorityQueue searchFrontier;
 
 	public int seed;
+
+	int searchFrontierPhase;
+
 
 
 	/// <summary>
@@ -52,7 +58,8 @@ public class HexGrid : MonoBehaviour {
 			Debug.LogError("Unsupported map size.");
 			return false;
 		}
-				
+
+		ClearPath();
 		if(chunks != null) {
 			for(int i = 0 ; i < chunks.Length ; i++) {
 				Destroy(chunks[i].gameObject);
@@ -239,7 +246,6 @@ public class HexGrid : MonoBehaviour {
 	/// </summary>
 	/// <param name="reader"> Binary reader passed through </param>
 	public void Load(BinaryReader reader, int header) {
-		StopAllCoroutines();
 		int x = 20, z = 15;
 		if(header >= 1) {
 			x = reader.ReadInt32();
@@ -264,9 +270,13 @@ public class HexGrid : MonoBehaviour {
 	/// Starts the searching algorithm of cell distances
 	/// </summary>
 	/// <param name="cell"> Starting cell of search </param>
-	public void FindPath(HexCell fromCell, HexCell toCell) {
-		StopAllCoroutines();
-		StartCoroutine(Search(fromCell,toCell));
+	public void FindPath(HexCell fromCell, HexCell toCell, int speed) {
+		
+		ClearPath();
+		currentPathFrom = fromCell;
+		currentPathTo = toCell;
+		currentPathExists = Search(fromCell, toCell, speed);
+		ShowPath(speed);
 	}
 
 
@@ -275,11 +285,14 @@ public class HexGrid : MonoBehaviour {
 	/// It weights each hex based on it distance value and its position being closer to the end point.
 	/// The hexes with the most progress in these categories get assessed first to minimize the amount of loops of the method.
 	/// Once it finds the end hex, it works backwards with hexes remembering which way they came to work to the origin point. 
+	/// Edit. Now assigns how many turns it would take to get there based on distance a unit can move.
 	/// </summary>
 	/// <param name="fromCell"> Origin hex </param>
 	/// <param name="toCell"> Destination hex </param>
 	/// <returns> Creates path towards end destination </returns>
-	IEnumerator Search(HexCell fromCell, HexCell toCell) {
+	bool Search(HexCell fromCell, HexCell toCell,int speed) {
+
+		searchFrontierPhase += 2;
 
 		if(searchFrontier == null) {
 			searchFrontier = new HexCellPriorityQueue();
@@ -288,37 +301,25 @@ public class HexGrid : MonoBehaviour {
 			searchFrontier.Clear();
 		}
 
-		for (int i = 0; i < cells.Length; i++) {
-			cells[i].Distance = int.MaxValue; //Set as max value to show we haven't visited cell yet.
-			cells[i].DisableHighLight();
-		}
-		fromCell.EnableHighlight(Color.blue);
-		toCell.EnableHighlight(Color.red);
-
-		WaitForSeconds delay = new WaitForSeconds(1 / 60f);
-		
+		fromCell.SearchPhase = searchFrontierPhase;
 		fromCell.Distance = 0;
 
 		searchFrontier.Enqueue(fromCell);
 		while (searchFrontier.Count > 0) {
 			
-			yield return delay;
-			HexCell current = searchFrontier.Dequeue();		
+			HexCell current = searchFrontier.Dequeue();
+			current.SearchPhase += 1;
 
 			if(current == toCell) {
-				current = current.PathFrom;
-				while(current != fromCell) {
-					current.EnableHighlight(Color.white);
-					current = current.PathFrom;
-				}
-
-				break;
+				return true;
 			}
+
+			int currentTurn = current.Distance / speed;
 
 			for (HexDirection d = HexDirection.NE; d <= HexDirection.NW; d++) {
 				HexCell neighbour = current.GetNeighbor(d);
 
-				if (neighbour == null) {
+				if (neighbour == null || neighbour.SearchPhase > searchFrontierPhase) {
 					continue;
 				}
 
@@ -331,20 +332,28 @@ public class HexGrid : MonoBehaviour {
 					continue;
 				}
 
-				int distance = current.Distance;
+				int moveCost;
 				if(current.HasRoadThroughEdge(d)){
-					distance += 1;
+					moveCost = 1;
 				}
 				else if(current.Walled != neighbour.Walled) {
 					continue;
 				}
 				else {
-					distance += edgeType == HexEdgeType.Flat ? 5 : 10;
-					distance += neighbour.UrbanLevel + neighbour.FarmLevel + neighbour.PlantLevel;
+					moveCost = edgeType == HexEdgeType.Flat ? 5 : 10;
+					moveCost += neighbour.UrbanLevel + neighbour.FarmLevel + neighbour.PlantLevel;
 				}
 
-				if(neighbour.Distance == int.MaxValue) {
+				int distance = current.Distance + moveCost;
+				int turn = distance / speed;
+
+				if(turn > currentTurn) {
+					distance = turn * speed + moveCost;
+				}
+
+				if(neighbour.SearchPhase < searchFrontierPhase) {
 					neighbour.Distance = distance;
+					neighbour.SearchPhase = searchFrontierPhase;
 					neighbour.PathFrom = current;
 					neighbour.SearchHeuristic = neighbour.coordinates.DistanceTo(toCell.coordinates);
 					searchFrontier.Enqueue(neighbour);
@@ -352,6 +361,7 @@ public class HexGrid : MonoBehaviour {
 				else if(distance < neighbour.Distance) {
 					int oldPriority = neighbour.SearchPriority;
 					neighbour.Distance = distance;
+
 					neighbour.PathFrom = current;
 					searchFrontier.Change(neighbour, oldPriority);
 				}
@@ -359,5 +369,45 @@ public class HexGrid : MonoBehaviour {
 			}
 
 		}
+		return false;
+	}
+
+	/// <summary>
+	/// Creates the path to get to a selected cell from its origin. 
+	/// </summary>
+	/// <param name="speed"></param>
+	void ShowPath(int speed) {
+		if (currentPathExists) {
+			HexCell current = currentPathTo;
+			while(current != currentPathFrom) {
+				int turn = current.Distance / speed;
+				current.SetLabel(turn.ToString());
+				current.EnableHighlight(Color.white);
+				current = current.PathFrom;
+			}
+		}
+		currentPathFrom.EnableHighlight(Color.blue);
+		currentPathTo.EnableHighlight(Color.red);
+	}
+
+	/// <summary>
+	/// Clears any previously made path, restoring it to defaut values
+	/// </summary>
+	void ClearPath() {
+		if (currentPathExists) {
+			HexCell current = currentPathTo;
+			while(current != currentPathFrom) {
+				current.SetLabel(null);
+				current.DisableHighLight();
+				current = current.PathFrom;
+			}
+			current.DisableHighLight();
+			currentPathExists = false;
+		}
+		else if (currentPathFrom) {
+			currentPathFrom.DisableHighLight();
+			currentPathTo.DisableHighLight();
+		}
+		currentPathFrom = currentPathTo = null;
 	}
 }
