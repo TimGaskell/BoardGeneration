@@ -163,6 +163,11 @@ public class HexGrid : MonoBehaviour {
 		return cells[x + z * cellCountX];
 	}
 
+	/// <summary>
+	/// Based on a ray cast ray inputed. Will return a Hex cell based on that rays vector3 converted to hex coordinates.
+	/// </summary>
+	/// <param name="ray"> Ray cast </param>
+	/// <returns> Hex cell from ray cast </returns>
 	public HexCell GetCell(Ray ray) {
 		RaycastHit hit;
 		if (Physics.Raycast(ray, out hit)) {
@@ -299,6 +304,9 @@ public class HexGrid : MonoBehaviour {
 		}
 	}
 
+	/// <summary>
+	/// Removes all units on the map from the list. Destroys all their game objects as well
+	/// </summary>
 	void ClearUnits() {
 		for(int i = 0; i <units.Count; i++) {
 			units[i].Die();
@@ -306,6 +314,12 @@ public class HexGrid : MonoBehaviour {
 		units.Clear();
 	}
 
+	/// <summary>
+	/// Adds Hex unit to list. Sets its transform, location and orientation
+	/// </summary>
+	/// <param name="unit"> Unit on map </param>
+	/// <param name="location"> Hex cell location for unit </param>
+	/// <param name="orientation"> Y rotation of unit</param>
 	public void AddUnit(HexUnit unit, HexCell location, float orientation) {
 		units.Add(unit);
 		unit.transform.SetParent(transform, false);
@@ -313,6 +327,10 @@ public class HexGrid : MonoBehaviour {
 		unit.Orientation = orientation;
 	}
 
+	/// <summary>
+	/// Removes a unit from the list. Destroys the unit
+	/// </summary>
+	/// <param name="unit"> Unit thats being removed </param>
 	public void RemoveUnit (HexUnit unit) {
 		units.Remove(unit);
 		unit.Die();
@@ -443,7 +461,7 @@ public class HexGrid : MonoBehaviour {
 	}
 
 	/// <summary>
-	/// Clears any previously made path, restoring it to defaut values
+	/// Clears any previously made path, restoring it to default values
 	/// </summary>
 	public void ClearPath() {
 		if (currentPathExists) {

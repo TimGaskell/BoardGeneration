@@ -96,11 +96,20 @@ public struct HexCoordinates {
 		(z < other.z ? other.z - z : z - other.z)) / 2;
 	}
 
+	/// <summary>
+	/// Saves X and Z Coordinates for Hex Cell
+	/// </summary>
+	/// <param name="writer"> Passed in writer parameter </param>
 	public void Save(BinaryWriter writer) {
 		writer.Write(x);
 		writer.Write(z);
 	}
 
+	/// <summary>
+	/// Loads previously saved Hex coordinates for a hex. Returns them as a hex coordinate
+	/// </summary>
+	/// <param name="reader"> Passed in reader parameter </param>
+	/// <returns> Hex coordinate of cell </returns>
 	public static HexCoordinates Load(BinaryReader reader) {
 		HexCoordinates c;
 		c.x = reader.ReadInt32();

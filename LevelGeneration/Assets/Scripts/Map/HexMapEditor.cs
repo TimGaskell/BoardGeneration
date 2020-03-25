@@ -350,10 +350,17 @@ public class HexMapEditor : MonoBehaviour {
 		enabled = toggle;
 	}
 
+	/// <summary>
+	/// Returns the current Hex under the cursor
+	/// </summary>
+	/// <returns> Hex cell under cursor </returns>
 	HexCell GetCellUnderCursor() {
 		return hexGrid.GetCell(Camera.main.ScreenPointToRay(Input.mousePosition));
 	}
 
+	/// <summary>
+	/// Adds and creates a unit on a hex if there currently isn't one already on the  same hex. 
+	/// </summary>
 	void CreateUnit() {
 		HexCell cell = GetCellUnderCursor();
 		if (cell && !cell.Unit) {
@@ -361,6 +368,9 @@ public class HexMapEditor : MonoBehaviour {
 		}
 	}
 
+	/// <summary>
+	/// Destroys the unit that is currently under the mouse position
+	/// </summary>
 	void DestroyUnit() {
 		HexCell cell = GetCellUnderCursor();
 		if(cell && cell.Unit) {
