@@ -37,11 +37,17 @@ public class HexCell : MonoBehaviour {
 
 	public HexGridChunk chunk;
 
+	public HexUnit Unit { get; set; }
+
 	void Refresh()
 	{
 		if (chunk)
 		{
 			chunk.Refresh();
+
+			if (Unit) {
+				Unit.ValidateLocation();
+			}
 			for(int i = 0; i < neighbors.Length; i++)
 			{
 				HexCell neighbor = neighbors[i];
@@ -56,6 +62,9 @@ public class HexCell : MonoBehaviour {
 	void RefreshSelfOnly()
 	{
 		chunk.Refresh();
+		if (Unit) {
+			Unit.ValidateLocation();
+		}
 	}
 
 	/// <summary>

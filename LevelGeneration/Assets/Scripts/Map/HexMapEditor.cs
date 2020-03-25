@@ -22,7 +22,7 @@ public class HexMapEditor : MonoBehaviour {
 
 	bool isDrag;
 	HexDirection dragDirection;
-	HexCell previousCell, searchFromCell, searchToCell;
+	HexCell previousCell;
 
 	int brushSize;
 
@@ -36,29 +36,36 @@ public class HexMapEditor : MonoBehaviour {
 	void Awake () {
 
 		terrainMaterial.DisableKeyword("GRID_ON");
+		SetEditMode(false);
 	}
 
 	void Update () {
-		if (
-			Input.GetMouseButton(0) &&
-			!EventSystem.current.IsPointerOverGameObject()
-		) {
-			HandleInput();
+
+		if (!EventSystem.current.IsPointerOverGameObject()) {
+			if (Input.GetMouseButton(0)) {
+				HandleInput();
+				return;
+			}
+			if (Input.GetKeyDown(KeyCode.U)) {
+				if (Input.GetKey(KeyCode.LeftShift)) {
+					DestroyUnit();
+				}
+				else {
+					CreateUnit();
+				}
+			}
 		}
-		else
-		{
-			previousCell = null;
-		}
+		previousCell = null;
 	}
 
 	/// <summary>
 	/// Handles Input of Mouse button down. If it clicks on a hexagon, it will change its color to the one currently selected
 	/// </summary>
 	void HandleInput () {
-		Ray inputRay = Camera.main.ScreenPointToRay(Input.mousePosition);
-		RaycastHit hit;
-		if (Physics.Raycast(inputRay, out hit)) {
-			HexCell CurrentCell = hexGrid.GetCell(hit.point);
+
+		HexCell CurrentCell = GetCellUnderCursor();
+
+		if (CurrentCell) { 
 
 			if(previousCell && previousCell != CurrentCell)
 			{
@@ -67,32 +74,12 @@ public class HexMapEditor : MonoBehaviour {
 			else
 			{
 				isDrag = false;
-			}
-			if (editMode) {
-				EditCells(CurrentCell);
-			}
-			else if (Input.GetKey(KeyCode.LeftShift) && searchToCell != CurrentCell) {
-				if (searchFromCell != CurrentCell) {
-					if (searchFromCell) {
-						searchFromCell.DisableHighLight();
-					}
-					searchFromCell = CurrentCell;
-					searchFromCell.EnableHighlight(Color.blue);
-					if (searchToCell) {
-						hexGrid.FindPath(searchFromCell, searchToCell, 24);
-					}
-				}
-			}
-			else if (searchFromCell && searchFromCell != CurrentCell) {
-				if (searchToCell != CurrentCell) {
-					searchToCell = CurrentCell;
-					hexGrid.FindPath(searchFromCell, searchToCell, 24);
-				}
-			}
+			}		
+			EditCells(CurrentCell);
+			
 			previousCell = CurrentCell;
 		}
-		else
-		{
+		else {
 			previousCell = null;
 		}
 	}
@@ -360,8 +347,25 @@ public class HexMapEditor : MonoBehaviour {
 	/// </summary>
 	/// <param name="toggle"> bool value of on or off </param>
 	public void SetEditMode(bool toggle) {
-		editMode = toggle;
-		hexGrid.ShowUI(!toggle);
+		enabled = toggle;
+	}
+
+	HexCell GetCellUnderCursor() {
+		return hexGrid.GetCell(Camera.main.ScreenPointToRay(Input.mousePosition));
+	}
+
+	void CreateUnit() {
+		HexCell cell = GetCellUnderCursor();
+		if (cell && !cell.Unit) {
+			hexGrid.AddUnit(Instantiate(HexUnit.unitPrefab), cell, Random.Range(0f, 360f));
+		}
+	}
+
+	void DestroyUnit() {
+		HexCell cell = GetCellUnderCursor();
+		if(cell && cell.Unit) {
+			hexGrid.RemoveUnit(cell.Unit);
+		}
 	}
 	
 }
