@@ -77,6 +77,10 @@ public class HexUnit : MonoBehaviour
         Destroy(gameObject);
     }
 
+    /// <summary>
+    /// Initiates movement of hex unit based on a list of Hex cells pass through. Instantly has the hex unit define its location by the end point
+    /// </summary>
+    /// <param name="path"> List of Hex Cells the unit will travel through </param>
     public void Travel(List<HexCell> path) {
         Location = path[path.Count - 1];
         pathToTravel = path;
@@ -84,6 +88,13 @@ public class HexUnit : MonoBehaviour
         StartCoroutine(TravelPath());
     }
 
+    /// <summary>
+    /// Method used for the movement of a unit through a path defined in a list of Hex Cells. It starts by looking at the forward position of where it will begin traveling to.
+    /// After which the function will look through all positions in the list and travel through them at a rate defined by speed and delta time. It also looks in the direction that it is currently traveling.
+    /// The second loop ensures that the unit ends up in the final hexes center and looks in the forward direction.
+    /// After all that is complete, it assigns the position to hexes location, making sure it is the definitive coordinate of the hex. It also goes back to its original rotation.
+    /// </summary>
+    /// <returns> Nothing .</returns>
     IEnumerator TravelPath() {
         Vector3 a, b, c = pathToTravel[0].Position;
         transform.localPosition = c;
@@ -152,6 +163,15 @@ public class HexUnit : MonoBehaviour
     //    }
     //}
 
+
+    /// <summary>
+    /// Method used for having Unit looking in the direction of the cell that it traveling to.
+    /// Determines the difference in angle from its rotation to the rotation of point. This determines the angle it needs to change and the speed it rotates.
+    /// It spherically lerps the original rotation and the rotation it needs to be and updates by time.
+    /// Then sets the rotation to face the point just in case.
+    /// </summary>
+    /// <param name="point"></param>
+    /// <returns></returns>
     IEnumerator LookAt(Vector3 point) {
         point.y = transform.localRotation.y;
         Quaternion fromRotation = transform.localRotation;

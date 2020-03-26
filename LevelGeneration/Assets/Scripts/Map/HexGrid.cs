@@ -481,6 +481,10 @@ public class HexGrid : MonoBehaviour {
 		currentPathFrom = currentPathTo = null;
 	}
 
+	/// <summary>
+	/// Returns a list of Hex cells which create a path towards the end point of the map. 
+	/// </summary>
+	/// <returns> Returns list of hexes that lead to end point </returns>
 	public List<HexCell> GetPath() {
 		if (!currentPathExists) {
 			return null;
