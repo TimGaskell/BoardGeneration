@@ -7,8 +7,19 @@ public class HexUnit : MonoBehaviour
 {
     HexCell location;
     float orientation;
+
     public static HexUnit unitPrefab;
 
+    const float travelSpeed = 4f;
+    const float rotationSpeed = 180f;
+
+    List<HexCell> pathToTravel;
+
+    private void OnEnable() {
+        if (location) {
+            transform.localPosition = location.Position;
+        }
+    }
 
     /// <summary>
     /// Get: returns location of Hex unit
@@ -27,6 +38,7 @@ public class HexUnit : MonoBehaviour
             transform.localPosition = value.Position;
         }
     }
+
 
     /// <summary>
     /// Refreshes the local position to the hex cell location
@@ -63,6 +75,100 @@ public class HexUnit : MonoBehaviour
     public void Die() {
         location.Unit = null;
         Destroy(gameObject);
+    }
+
+    public void Travel(List<HexCell> path) {
+        Location = path[path.Count - 1];
+        pathToTravel = path;
+        StopAllCoroutines();
+        StartCoroutine(TravelPath());
+    }
+
+    IEnumerator TravelPath() {
+        Vector3 a, b, c = pathToTravel[0].Position;
+        transform.localPosition = c;
+        yield return LookAt(pathToTravel[1].Position);
+
+        float t = Time.deltaTime * travelSpeed;
+
+        for(int i = 1; i < pathToTravel.Count; i++) {
+          
+            a = c;
+            b = pathToTravel[i - 1].Position;
+            c = (b + pathToTravel[i].Position) * 0.5f;
+            for (; t < 1f; t += Time.deltaTime * travelSpeed) {
+                transform.localPosition = Bezier.GetPoint(a,b,c,t);
+                Vector3 d = Bezier.GetDerivative(a, b, c, t);
+                d.y = 0f;
+                transform.localRotation = Quaternion.LookRotation(d);
+                yield return null;
+            }
+            t -= 1f;
+        }
+
+        a = c;
+        b = pathToTravel[pathToTravel.Count - 1].Position;
+        c = b;
+
+        for (; t < 1f; t += Time.deltaTime * travelSpeed) {
+           
+            transform.localPosition = Bezier.GetPoint(a, b, c, t);
+            Vector3 d = Bezier.GetDerivative(a, b, c, t);
+            d.y = 0f;
+            transform.localRotation = Quaternion.LookRotation(d);
+          
+            yield return null;
+        }
+
+        transform.localPosition = location.Position;
+        orientation = transform.localRotation.eulerAngles.y;
+        ListPool<HexCell>.Add(pathToTravel);
+        pathToTravel = null;
+    }
+
+    //void OnDrawGizmos() {
+    //    if (pathToTravel == null || pathToTravel.Count == 0) {
+    //        return;
+    //    }
+
+    //    Vector3 a, b,c = pathToTravel[0].Position;
+
+    //    for (int i = 1; i < pathToTravel.Count; i++) {
+
+    //        a = c;
+    //        b = pathToTravel[i - 1].Position;
+    //        c = (b + pathToTravel[i].Position) * 0.5f;
+
+    //        for (float t = 0f; t < 1f; t += 0.1f) {
+    //            Gizmos.DrawSphere(Bezier.GetPoint(a,b,c,t), 2f);
+    //        }
+
+    //    }
+    //    a = c;
+    //    b = pathToTravel[pathToTravel.Count - 1].Position;
+    //    c = b;
+    //    for (float t = 0f; t < 1f; t += 0.1f) {
+    //        Gizmos.DrawSphere(Bezier.GetPoint(a, b, c, t), 2f);
+    //    }
+    //}
+
+    IEnumerator LookAt(Vector3 point) {
+        point.y = transform.localRotation.y;
+        Quaternion fromRotation = transform.localRotation;
+        Quaternion toRotation = Quaternion.LookRotation(point - transform.localPosition);
+
+        float angle = Quaternion.Angle(fromRotation, toRotation);
+        float speed = rotationSpeed / angle;
+
+        if (angle > 0) {
+            for (float t = Time.deltaTime * speed; t < 1f; t += Time.deltaTime * speed) {
+                transform.localRotation = Quaternion.Slerp(fromRotation, toRotation, t);
+                yield return null;
+            }
+        }
+
+        transform.LookAt(point);
+        orientation = transform.localRotation.eulerAngles.y;
     }
 
     /// <summary>

@@ -6,8 +6,7 @@ public class HexGameUI : MonoBehaviour {
 	public HexGrid grid;
 
 	HexCell currentCell;
-
-	HexUnit selectedUnit;
+    HexUnit selectedUnit;
 
 	public void SetEditMode(bool toggle) {
 		enabled = !toggle;
@@ -62,7 +61,7 @@ public class HexGameUI : MonoBehaviour {
 	/// </summary>
 	void DoMove() {
 		if (grid.HasPath) {
-			selectedUnit.Location = currentCell;
+			selectedUnit.Travel(grid.GetPath());
 			grid.ClearPath();
 		}
 	}

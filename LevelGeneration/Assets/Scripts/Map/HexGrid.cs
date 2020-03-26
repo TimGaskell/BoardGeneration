@@ -384,7 +384,7 @@ public class HexGrid : MonoBehaviour {
 				return true;
 			}
 
-			int currentTurn = current.Distance / speed;
+			int currentTurn = (current.Distance - 1) / speed;
 
 			for (HexDirection d = HexDirection.NE; d <= HexDirection.NW; d++) {
 				HexCell neighbour = current.GetNeighbor(d);
@@ -415,7 +415,7 @@ public class HexGrid : MonoBehaviour {
 				}
 
 				int distance = current.Distance + moveCost;
-				int turn = distance / speed;
+				int turn = (distance - 1) / speed;
 
 				if(turn > currentTurn) {
 					distance = turn * speed + moveCost;
@@ -450,7 +450,7 @@ public class HexGrid : MonoBehaviour {
 		if (currentPathExists) {
 			HexCell current = currentPathTo;
 			while(current != currentPathFrom) {
-				int turn = current.Distance / speed;
+				int turn = (current.Distance - 1) / speed;
 				current.SetLabel(turn.ToString());
 				current.EnableHighlight(Color.white);
 				current = current.PathFrom;
@@ -479,5 +479,18 @@ public class HexGrid : MonoBehaviour {
 			currentPathTo.DisableHighLight();
 		}
 		currentPathFrom = currentPathTo = null;
+	}
+
+	public List<HexCell> GetPath() {
+		if (!currentPathExists) {
+			return null;
+		}
+		List<HexCell> path = ListPool<HexCell>.Get();
+		for(HexCell c = currentPathTo; c != currentPathFrom; c = c.PathFrom) {
+			path.Add(c);
+		}
+		path.Add(currentPathFrom);
+		path.Reverse();
+		return path;
 	}
 }
