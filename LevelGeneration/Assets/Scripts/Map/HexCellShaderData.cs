@@ -7,6 +7,11 @@ public class HexCellShaderData : MonoBehaviour
 	Texture2D cellTexture;
 	Color32[] cellTextureData;
 
+	/// <summary>
+	/// Creates a global texture which is used to texture each cell on the map. Each cell has its individual color32 saved in an array  to apply the right color to each cell.
+	/// </summary>
+	/// <param name="x"> X size of map </param>
+	/// <param name="z"> Z size of map </param>
 	public void Initialize(int x, int z) {
 		if (cellTexture) {
 			cellTexture.Resize(x, z);
@@ -19,9 +24,7 @@ public class HexCellShaderData : MonoBehaviour
 			cellTexture.wrapMode = TextureWrapMode.Clamp;
 			Shader.SetGlobalTexture("_HexCellData", cellTexture);
 		}
-		Shader.SetGlobalVector(
-			"_HexCellData_TexelSize",
-			new Vector4(1f / x, 1f / z, x, z)
+		Shader.SetGlobalVector("_HexCellData_TexelSize",new Vector4(1f / x, 1f / z, x, z)
 		);
 
 		if (cellTextureData == null || cellTextureData.Length != x * z) {
@@ -35,6 +38,10 @@ public class HexCellShaderData : MonoBehaviour
 		enabled = true;
 	}
 
+	/// <summary>
+	/// Assigns the alpha of a hex cell location in the cellTextureData to the terrain type index to be used by the shader. This is what textures the cells to what terrain they are. 
+	/// </summary>
+	/// <param name="cell"> Cell that is being textured </param>
 	public void RefreshTerrain(HexCell cell) {
 		cellTextureData[cell.Index].a = (byte)cell.TerrainTypeIndex;
 		enabled = true;
@@ -46,6 +53,10 @@ public class HexCellShaderData : MonoBehaviour
 		enabled = false;
 	}
 
+	/// <summary>
+	/// Assigns the Red color to equal the amount of visibility a cell has. If the Red channel is 0 then there is no visibility, else there is. 
+	/// </summary>
+	/// <param name="cell"> Cell that is being textured </param>
 	public void RefreshVisibility(HexCell cell) {
 		cellTextureData[cell.Index].r = cell.IsVisible ? (byte)255 : (byte)0;
 		enabled = true;

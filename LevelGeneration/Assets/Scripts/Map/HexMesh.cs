@@ -248,6 +248,13 @@ public class HexMesh : MonoBehaviour {
 	}
 
 
+	/// <summary>
+	/// Adds the index of cells and their color weights to the cell weights list. This will determine which cells are being colored and what their blended color is going to be.
+	/// </summary>
+	/// <param name="indices"> Indexes of Three Cells </param>
+	/// <param name="weights1"> Color of First Cell </param>
+	/// <param name="weights2"> Color of Second Cell</param>
+	/// <param name="weights3"> Color of third Cell</param>
 	public void AddTriangleCellData( Vector3 indices, Color weights1, Color weights2, Color weights3) {
 		cellIndices.Add(indices);
 		cellIndices.Add(indices);
@@ -257,10 +264,23 @@ public class HexMesh : MonoBehaviour {
 		cellWeights.Add(weights3);
 	}
 
+	/// <summary>
+	/// Adds the index of cells and their color weights to the cell weights list. Used for when coloring a singular cell.
+	/// </summary>
+	/// <param name="indices"></param>
+	/// <param name="weights"></param>
 	public void AddTriangleCellData(Vector3 indices, Color weights) {
 		AddTriangleCellData(indices, weights, weights, weights);
 	}
 
+	/// <summary>
+	/// Adds the index of cells and their color weights to the cell weights list. This will determine which cells are being colored and what their blended color is going to be.
+	/// </summary>
+	/// <param name="indices"> Indexes of Three Cells </param>
+	/// <param name="weights1"> Color1 triangle </param>
+	/// <param name="weights2"> Color2 triangle </param>
+	/// <param name="weights3"> Color3 triangle </param>
+	/// <param name="weights4"> Color4 for triangle</param>
 	public void AddQuadCellData(Vector3 indices, Color weights1, Color weights2, Color weights3, Color weights4) {
 		cellIndices.Add(indices);
 		cellIndices.Add(indices);
@@ -272,10 +292,21 @@ public class HexMesh : MonoBehaviour {
 		cellWeights.Add(weights4);
 	}
 
+	/// <summary>
+	/// Adds the index of cells and their color weights to the cell weights list. This will determine which cells are being colored and what their blended color is going to be.
+	/// </summary>
+	/// <param name="indices"> Indexes of Three Cells </param>
+	/// <param name="weights1"> Color1 triangle </param>
+	/// <param name="weights2"> Color2 triangle </param>
 	public void AddQuadCellData(Vector3 indices, Color weights1, Color weights2) {
 		AddQuadCellData(indices, weights1, weights1, weights2, weights2);
 	}
 
+	/// <summary>
+	/// Adds the index of cells and their color weights to the cell weights list. This will determine which cells are being colored and what their blended color is going to be. Used for when coloring a singular cell.
+	/// </summary>
+	/// <param name="indices"> Indexes of Three Cells </param>
+	/// <param name="weights"> Color of Quad </param>
 	public void AddQuadCellData(Vector3 indices, Color weights) {
 		AddQuadCellData(indices, weights, weights, weights, weights);
 	}

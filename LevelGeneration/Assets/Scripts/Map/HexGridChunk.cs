@@ -651,7 +651,12 @@ public class HexGridChunk : MonoBehaviour
 
 	}
 
-
+	/// <summary>
+	/// Creates a triangle fan which goes from its center to draw four triangles in a fan like fashion.
+	/// </summary>
+	/// <param name="center"> Center vector which triangles will start to be drawn from </param>
+	/// <param name="edge"> Group of edge vertices's which define vector 3 coordinates of where to draw the triangle </param>
+	/// <param name="index"> Index of cell which cell this is being drawn in</param>
 	void TriangulateEdgeFan(Vector3 center, EdgeVertices edge, float index)
 	{
 		terrain.AddTriangle(center, edge.v1, edge.v2);
@@ -669,6 +674,16 @@ public class HexGridChunk : MonoBehaviour
 	}
 
 
+	/// <summary>
+	/// Creates a strip of quads between two edges of Hex cells. Made up of multiple triangles 
+	/// </summary>
+	/// <param name="e1"> Group of edge vertices's for first cell which define vector 3 coordinates of where to draw the triangle</param>
+	/// <param name="w1"> Color weight for the first cell </param>
+	/// <param name="index1"> Index of first cell </param>
+	/// <param name="e2"> Group of edge vertices's for second cell which define vector 3 coordinates of where to draw the triangle</param>
+	/// <param name="w2"> Color weight for the second cell</param>
+	/// <param name="index2"> index of second cell </param>
+	/// <param name="hasRoad"> has a road going through edge where quad is being drawn </param>
 	void TriangulateEdgeStrip(EdgeVertices e1, Color w1, float index1, EdgeVertices e2, Color w2,float index2, bool hasRoad = false)
 	{
 		terrain.AddQuad(e1.v1, e1.v2, e2.v1, e2.v2);		

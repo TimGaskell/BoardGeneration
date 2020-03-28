@@ -506,6 +506,12 @@ public class HexGrid : MonoBehaviour {
 		return path;
 	}
 
+	/// <summary>
+	/// Gets all hex cells in a given range from a specified point.
+	/// </summary>
+	/// <param name="fromCell"> Starting cell </param>
+	/// <param name="range"> How many hexes from the origin it will search in a circle </param>
+	/// <returns> List of Hex cells in a radius from the center hex </returns>
 	List<HexCell> GetVisibleCells (HexCell fromCell,int range) {
 		List<HexCell> visibleCells = ListPool<HexCell>.Get();
 
@@ -534,9 +540,7 @@ public class HexGrid : MonoBehaviour {
 
 				if (neighbour == null || neighbour.SearchPhase > searchFrontierPhase) {
 					continue;
-				}
-
-			
+				}			
 				
 				int distance = current.Distance + 1;
 				
@@ -554,7 +558,6 @@ public class HexGrid : MonoBehaviour {
 					int oldPriority = neighbour.SearchPriority;
 					neighbour.Distance = distance;
 
-
 					searchFrontier.Change(neighbour, oldPriority);
 				}
 
@@ -564,6 +567,11 @@ public class HexGrid : MonoBehaviour {
 		return visibleCells;
 	}
 
+	/// <summary>
+	/// Starts the visibility search of cells in the radius of the origin cell and range. Increases all cells visibility that is returned by the list
+	/// </summary>
+	/// <param name="fromCell"> Starting cell </param>
+	/// <param name="range"> Radius of search </param>
 	public void IncreaseVisibility(HexCell fromCell, int range) {
 		List<HexCell> cells = GetVisibleCells(fromCell, range);
 		for(int i = 0; i < cells.Count; i++) {
@@ -572,6 +580,11 @@ public class HexGrid : MonoBehaviour {
 		ListPool<HexCell>.Add(cells);
 	}
 
+	/// <summary>
+	/// Starts the visibility search of cells in the radius of the origin cell and range. Decreases all cells visibility that is returned by the list
+	/// </summary>
+	/// <param name="fromCell"> Starting cell </param>
+	/// <param name="range"> Radius of search </param>
 	public void DecreaseVisibility(HexCell fromCell,int range) {
 		List<HexCell> cells = GetVisibleCells(fromCell, range);
 		for (int i = 0; i < cells.Count; i++) {

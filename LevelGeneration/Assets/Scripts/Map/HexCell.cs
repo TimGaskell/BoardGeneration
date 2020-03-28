@@ -686,12 +686,18 @@ public class HexCell : MonoBehaviour {
 		}
 	}
 
+	/// <summary>
+	/// Returns whether this hex cell is visible or not
+	/// </summary>
 	public bool IsVisible {
 		get {
 			return  visibility > 0;
 		}
 	}
 
+	/// <summary>
+	/// Increases the visibility of this hex cell. Refreshes shader data to redraw hex.
+	/// </summary>
 	public void IncreaseVisibility() {
 		visibility += 1;
 		if(visibility == 1) {
@@ -699,6 +705,9 @@ public class HexCell : MonoBehaviour {
 		}
 	}
 
+	/// <summary>
+	/// Decreases the visibility of this hex cell. Refreshes shader data to redraw hex.
+	/// </summary>
 	public void DecreaseVisibility() {
 		visibility -= 1;
 		if(visibility == 0) {
