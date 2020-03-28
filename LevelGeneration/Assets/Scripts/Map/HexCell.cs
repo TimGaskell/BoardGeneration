@@ -13,9 +13,15 @@ public class HexCell : MonoBehaviour {
 
 	public HexCell NextWithSamePriority { get; set; }
 
+	public HexCellShaderData ShaderData { get; set; }
+
 	public int SearchPhase { get; set; }
 
 	public int SearchHeuristic { get; set; }
+
+	public int Index { get; set; }
+
+	int visibility;
 
 	bool hasIncomingRiver, hasOutgoingRiver;
 	HexDirection incomingRiver, outgoingRiver;
@@ -139,7 +145,7 @@ public class HexCell : MonoBehaviour {
 		set {
 			if(terrainTypeIndex != value) {
 				terrainTypeIndex = value;
-				Refresh();
+				ShaderData.RefreshTerrain(this);
 			}
 		}
 	}
@@ -611,6 +617,7 @@ public class HexCell : MonoBehaviour {
 	public void Load(BinaryReader reader) {
 
 		terrainTypeIndex = reader.ReadByte();
+		ShaderData.RefreshTerrain(this);
 		elevation = reader.ReadByte();
 		RefreshPosition();
 		waterLevel = reader.ReadByte();
@@ -676,6 +683,26 @@ public class HexCell : MonoBehaviour {
 	public int SearchPriority {
 		get {
 			return distance + SearchHeuristic;
+		}
+	}
+
+	public bool IsVisible {
+		get {
+			return  visibility > 0;
+		}
+	}
+
+	public void IncreaseVisibility() {
+		visibility += 1;
+		if(visibility == 1) {
+			ShaderData.RefreshVisibility(this);
+		}
+	}
+
+	public void DecreaseVisibility() {
+		visibility -= 1;
+		if(visibility == 0) {
+			ShaderData.RefreshVisibility(this);
 		}
 	}
 	
