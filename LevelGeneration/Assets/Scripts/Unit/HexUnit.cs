@@ -75,7 +75,7 @@ public class HexUnit : MonoBehaviour
     /// <param name="cell"> Cell it is checking </param>
     /// <returns> True or false if it can move to hex </returns>
     public bool IsValidDestination(HexCell cell) {
-        return !cell.isUnderwater && !cell.Unit;
+        return cell.IsExplored && !cell.isUnderwater && !cell.Unit;
     }
 
     /// <summary>
@@ -156,6 +156,38 @@ public class HexUnit : MonoBehaviour
         pathToTravel = null;
     }
 
+    /// <summary>
+    ///  Used for determining how much movement cost there is to travel to a specified hex cell from another hex cell. These cells have to be next to each other however or the cost will not account for multiple cells
+    /// </summary>
+    /// <param name="fromCell"> Current cell </param>
+    /// <param name="toCell"> Cell moving to </param>
+    /// <param name="direction"> Direction cell to cell is in </param>
+    /// <returns></returns>
+    public int GetMoveCost(HexCell fromCell, HexCell toCell, HexDirection direction) {
+       
+        if (!IsValidDestination(toCell)) {
+            return -1;
+        }
+        HexEdgeType edgeType = fromCell.GetEdgeType(toCell);
+        if (edgeType == HexEdgeType.Cliff) {
+            return -1;
+        }
+        int moveCost;
+        if (fromCell.HasRoadThroughEdge(direction)) {
+            moveCost = 1;
+        }
+        else if (fromCell.Walled != toCell.Walled) {
+            return -1;
+        }
+        else {
+            moveCost = edgeType == HexEdgeType.Flat ? 5 : 10;
+            moveCost +=
+                toCell.UrbanLevel + toCell.FarmLevel + toCell.PlantLevel;
+        }
+        return moveCost;
+    }
+
+
     //void OnDrawGizmos() {
     //    if (pathToTravel == null || pathToTravel.Count == 0) {
     //        return;
@@ -230,5 +262,12 @@ public class HexUnit : MonoBehaviour
         grid.AddUnit(Instantiate(unitPrefab), grid.GetCell(coordinates), orientation);
     }
 
-   
+    /// <summary>
+    /// Returns the speed for this unit
+    /// </summary>
+   public int Speed {
+        get {
+            return 24;
+        }
+    }
 }

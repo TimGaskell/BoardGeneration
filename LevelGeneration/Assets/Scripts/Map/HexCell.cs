@@ -21,6 +21,8 @@ public class HexCell : MonoBehaviour {
 
 	public int Index { get; set; }
 
+	public bool IsExplored { get; private set; }
+
 	int visibility;
 
 	bool hasIncomingRiver, hasOutgoingRiver;
@@ -608,13 +610,14 @@ public class HexCell : MonoBehaviour {
 		for (int i = 0; i < roads.Length; i++) {
 			writer.Write(roads[i]);
 		}
+		writer.Write(IsExplored);
 	}
 
 	/// <summary>
 	/// Reads from the binary file to assign cell data to this current cell. 
 	/// </summary>
 	/// <param name="reader"> Binary reader used to read the binary file</param>
-	public void Load(BinaryReader reader) {
+	public void Load(BinaryReader reader, int header) {
 
 		terrainTypeIndex = reader.ReadByte();
 		ShaderData.RefreshTerrain(this);
@@ -636,6 +639,8 @@ public class HexCell : MonoBehaviour {
 		for (int i = 0; i < roads.Length; i++) {
 			roads[i] = reader.ReadBoolean();
 		}
+		IsExplored = header >= 3 ? reader.ReadBoolean() : false;
+		ShaderData.RefreshVisibility(this);
 	}
 
 	/// <summary>
@@ -701,6 +706,7 @@ public class HexCell : MonoBehaviour {
 	public void IncreaseVisibility() {
 		visibility += 1;
 		if(visibility == 1) {
+			IsExplored = true;
 			ShaderData.RefreshVisibility(this);
 		}
 	}
