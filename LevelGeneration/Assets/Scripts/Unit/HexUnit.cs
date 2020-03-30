@@ -270,4 +270,13 @@ public class HexUnit : MonoBehaviour
             return 24;
         }
     }
+
+    /// <summary>
+    /// Returns the vision range of this unit
+    /// </summary>
+    public int VisionRange {
+        get {
+            return 3;
+        }
+    }
 }

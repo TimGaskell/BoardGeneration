@@ -21,7 +21,9 @@ public class HexCell : MonoBehaviour {
 
 	public int Index { get; set; }
 
-	public bool IsExplored { get; private set; }
+	public bool Explorable { get; set; }
+
+	bool explored;
 
 	int visibility;
 
@@ -107,7 +109,11 @@ public class HexCell : MonoBehaviour {
 			if (elevation == value)
 				return;
 
+			int originalViewElevation = ViewElevation;
 			elevation = value;
+			if(ViewElevation != originalViewElevation) {
+				ShaderData.ViewElevationChanged();
+			}
 			RefreshPosition();
 			ValidateRivers();
 		
@@ -449,7 +455,11 @@ public class HexCell : MonoBehaviour {
 			{
 				return;
 			}
+			int originalViewElevation = ViewElevation;
 			waterLevel = value;
+			if(ViewElevation != originalViewElevation) {
+				ShaderData.ViewElevationChanged();
+			}
 			ValidateRivers();
 			Refresh();
 		}
@@ -696,8 +706,21 @@ public class HexCell : MonoBehaviour {
 	/// </summary>
 	public bool IsVisible {
 		get {
-			return  visibility > 0;
+			return  visibility > 0 && Explorable;
 		}
+	}
+
+	/// <summary>
+	/// returns whether this hex cell has been explored and is actually explorable. Used for calculating vision
+	/// </summary>
+	public bool IsExplored {
+		get {
+			return explored && Explorable;
+		}
+		private set {
+			explored = value;
+		}
+
 	}
 
 	/// <summary>
@@ -720,5 +743,23 @@ public class HexCell : MonoBehaviour {
 			ShaderData.RefreshVisibility(this);
 		}
 	}
+
+	/// <summary>
+	/// Returns the elevation viewing height
+	/// </summary>
+	public int ViewElevation {
+		get {
+			return elevation >= waterLevel ? elevation : waterLevel;
+		}
+	}
 	
+	/// <summary>
+	/// Resets the visibility of a cell 
+	/// </summary>
+	public void ResetVisibility() {
+		if(visibility > 0) {
+			visibility = 0;
+			ShaderData.RefreshVisibility(this);
+		}
+	}
 }

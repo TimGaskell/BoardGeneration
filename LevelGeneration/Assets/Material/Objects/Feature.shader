@@ -13,9 +13,11 @@
 
 			CGPROGRAM
 			#pragma surface surf StandardSpecular fullforwardshadows vertex:vert
+
 			#pragma target 3.0
 
 			#include "../HexCellData.cginc"
+		    #pragma multi_compile _ HEX_MAP_EDIT_MODE
 
 			sampler2D _MainTex, _GridCoordinates;
 

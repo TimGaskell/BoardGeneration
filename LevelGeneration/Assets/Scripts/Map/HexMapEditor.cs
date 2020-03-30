@@ -16,9 +16,9 @@ public class HexMapEditor : MonoBehaviour {
 
 	int activeTerrainTypeIndex;
 
-	bool applyElevation = true;
+	bool applyElevation = false;
 	bool applyUrbanLevel, applyFarmLevel, applyPlantLevel, applySpecialIndex;
-	bool applyWaterLevel = true;
+	bool applyWaterLevel = false;
 
 	bool isDrag;
 	HexDirection dragDirection;
