@@ -6,6 +6,9 @@ public class NewMapMenu : MonoBehaviour
 {
 
     public HexGrid hexgGrid;
+    public HexMapGenerator mapGenerator;
+
+    bool generateMaps = true;
 
     /// <summary>
     /// Opens the new map UI and locks the camera
@@ -29,7 +32,12 @@ public class NewMapMenu : MonoBehaviour
     /// <param name="x"> How many cells in the x direction </param>
     /// <param name="z"> How many cells in the z direction </param>
     void CreateMap(int x, int z) {
-        hexgGrid.CreateMap(x, z);
+        if (generateMaps) {
+            mapGenerator.GenerateMap(x, z);
+        }
+        else {
+            hexgGrid.CreateMap(x, z);
+        }
         HexMapCamera.ValidatePosition();
         Close();
     }
@@ -57,5 +65,14 @@ public class NewMapMenu : MonoBehaviour
         CreateMap(80, 60);
         HexMapCamera.Locked = false;
     }
+
+    /// <summary>
+    /// Toggles whether the map will be randomly generated or a standard map
+    /// </summary>
+    /// <param name="toggle"> Yer or no to random generation </param>
+    public void ToggleMapGeneration(bool toggle) {
+        generateMaps = toggle;
+    }
+
 
 }

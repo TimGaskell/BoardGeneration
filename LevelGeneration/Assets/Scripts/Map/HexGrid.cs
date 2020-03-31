@@ -184,6 +184,25 @@ public class HexGrid : MonoBehaviour {
 	}
 
 	/// <summary>
+	/// Returns the cell located at the offsets of x and z
+	/// </summary>
+	/// <param name="xOffset"> Hex cell x offset </param>
+	/// <param name="zOffset"> Hex cell z offset </param>
+	/// <returns> Hex cell located at the x and z offset </returns>
+	public HexCell GetCell(int xOffset, int zOffset) {
+		return cells[xOffset + zOffset * cellCountX];
+	}
+
+	/// <summary>
+	/// Returns hexcell based on its index
+	/// </summary>
+	/// <param name="cellIndex"> Hexcell index</param>
+	/// <returns> Hexcell at index</returns>
+	public HexCell GetCell(int cellIndex) {
+		return cells[cellIndex];
+	}
+
+	/// <summary>
 	/// Instantiates the Hex prefabs, assigning them their positions in relation to each other.
 	/// Assigns the neighbors of each hex in relation to each side (E.g. NE,SW, W, E, SE, NW).
 	/// Also responsible for attaching a Text label on top of each Hex displaying its location.
