@@ -765,4 +765,12 @@ public class HexCell : MonoBehaviour {
 			ShaderData.RefreshVisibility(this);
 		}
 	}
+
+	/// <summary>
+	/// Sets this cells texture in the blue channel by a set amount
+	/// </summary>
+	/// <param name="data"> amount of color in blue channel </param>
+	public void SetMapData(float data) {
+		ShaderData.SetMapData(this, data);
+	}
 }
