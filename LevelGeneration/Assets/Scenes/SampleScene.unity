@@ -14737,8 +14737,19 @@ MonoBehaviour:
   mapBorderX: 5
   mapBorderZ: 5
   regionBorder: 5
-  regionCount: 3
+  regionCount: 1
   erosionPercentage: 75
+  evaporationFactor: 0.5
+  precipitationFactor: 0.25
+  runoffFactor: 0.25
+  seepageFactor: 0.125
+  startingMoisture: 0.1
+  windDirection: 5
+  windStrength: 4
+  riverPercentage: 10
+  extraLakeProbabiliity: 0.1
+  lowTemperature: 0
+  highTemperature: 1
 --- !u!4 &1965674425
 Transform:
   m_ObjectHideFlags: 0
