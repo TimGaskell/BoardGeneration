@@ -49,6 +49,8 @@ public class HexCell : MonoBehaviour {
 
 	public HexUnit Unit { get; set; }
 
+	public int ColumnIndex { get; set; }
+
 	void Refresh()
 	{
 		if (chunk)
