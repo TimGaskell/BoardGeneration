@@ -20,6 +20,12 @@ public struct EdgeVertices {
         v5 = corner2;
     }
 
+    /// <summary>
+    /// Returns all vertex for an edge by looking at its corners
+    /// </summary>
+    /// <param name="corner1"> First corner of the edge </param>
+    /// <param name="corner2"> Second Corner of the edge </param>
+    /// <param name="outerStep"> How far inward into the hex </param>
     public EdgeVertices(Vector3 corner1, Vector3 corner2, float outerStep)
     {
         v1 = corner1;

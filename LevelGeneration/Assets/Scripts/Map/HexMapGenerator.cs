@@ -126,7 +126,7 @@ public class HexMapGenerator : MonoBehaviour
 
 	static float[] moistureBands = { 0.12f, 0.28f, 0.85f };
 
-	//x = moisture, y = temperature , terrain type and plant level
+	//x axis = moisture, y axis = temperature ,  x= terrain type  y = plant level
 	static Biome[] biomes = {
 		new Biome(0, 0), new Biome(4, 0), new Biome(4, 0), new Biome(4, 0),
 		new Biome(0, 0), new Biome(2, 0), new Biome(2, 1), new Biome(2, 2),
@@ -566,6 +566,11 @@ public class HexMapGenerator : MonoBehaviour
 		climate[cellIndex] = new ClimateData();
 	}
 
+	/// <summary>
+	/// Function responsible for generating rivers onto the map. It adds every cell into a list, adding extra copies if the cell has a high moisture rating and elevation. These will be river origin points
+	/// The function then attempts to draw a number of rivers based on the percentage of the map rated to have rivers.
+	/// If river origins are too close or are underwater then it wont try to create a river on that hex.
+	/// </summary>
 	void CreateRivers() {
 		List<HexCell> riverOrigins = ListPool<HexCell>.Get();
 		for (int i = 0; i < cellCount; i++) {
@@ -618,6 +623,17 @@ public class HexMapGenerator : MonoBehaviour
 		ListPool<HexCell>.Add(riverOrigins);
 	}
 
+	/// <summary>
+	/// Creates the segments of the river flowing through multiple cells. There are some specifications to creating a river:
+	/// - The cell a river is joined onto must be level or a lower elevation
+	/// - River cannot loop onto itself.
+	/// - River will priorities cells that aren't directly next to itself (Harsh turns on the river)
+	/// - If it runs into another river origin then it will join the two rivers together.
+	/// - If the surrounding cells of the river end are higher than the current, it will create lake
+	/// - There is a random chance of lakes being created along the river if the cell is of lower elevation
+	/// </summary>
+	/// <param name="origin"> Origin cell of river </param>
+	/// <returns> Amount of cells used in river creation </returns>
 	int CreateRiver(HexCell origin) {
 		int length = 1;
 		HexCell cell = origin;
@@ -686,6 +702,11 @@ public class HexMapGenerator : MonoBehaviour
 		return length;
 	}
 
+	/// <summary>
+	/// Determines the temperature of cells based off of latitude and cell height. This changes based on hemisphere mode, since the equator changes  
+	/// </summary>
+	/// <param name="cell"> Current cell </param>
+	/// <returns> Temperature of cell </returns>
 	float DetermineTemperature(HexCell cell) {
 		float latitude = (float)cell.coordinates.Z / grid.cellCountZ;
 		if(hemisphere == HemisphereMode.Both) {
@@ -707,7 +728,7 @@ public class HexMapGenerator : MonoBehaviour
 	}
 
 	/// <summary>
-	/// Sets the terrain types of all cells based on the amount of moisture in the cell.
+	/// Sets the terrain type based on its elevation, moisture and temperature. These values are used to determine the biome based on the biome array
 	/// </summary>
 	void SetTerrainType() {
 

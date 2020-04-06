@@ -41,6 +41,9 @@ public class HexGrid : MonoBehaviour {
 
 	int currentCenterColumnIndex = -1;
 
+	/// <summary>
+	/// Returns if there is a Path to get to a selected cell in path finding 
+	/// </summary>
 	public bool HasPath {
 		get {
 			return currentPathExists;
@@ -402,6 +405,11 @@ public class HexGrid : MonoBehaviour {
 		unit.Die();
 	}
 
+	/// <summary>
+	/// Assigns Hex chunks to a column to form a vertical line in the map
+	/// </summary>
+	/// <param name="child"> Chunk object </param>
+	/// <param name="columnIndex"> Column index </param>
 	public void MakeChildOfColumn (Transform child, int columnIndex) {
 		child.SetParent(columns[columnIndex], false);
 	}
@@ -505,7 +513,7 @@ public class HexGrid : MonoBehaviour {
 	/// <summary>
 	/// Creates the path to get to a selected cell from its origin. 
 	/// </summary>
-	/// <param name="speed"></param>
+	/// <param name="speed"> Amount of movement unit has </param>
 	void ShowPath(int speed) {
 		if (currentPathExists) {
 			HexCell current = currentPathTo;
@@ -661,6 +669,10 @@ public class HexGrid : MonoBehaviour {
 		}
 	}
 
+	/// <summary>
+	/// Determines the Center of the map to determine which chunk columns are used for wrapping on the left and right of the screen.
+	/// </summary>
+	/// <param name="xPosition"> Camera position </param>
 	public void CenterMap(float xPosition) {
 		int centerColumnIndex = (int)
 			(xPosition / (HexMetrics.innerDiameter * HexMetrics.chunkSizeX));

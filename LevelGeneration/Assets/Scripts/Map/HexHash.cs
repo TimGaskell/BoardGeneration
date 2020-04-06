@@ -8,7 +8,7 @@ public struct HexHash {
     /// Series of random numbers between 0 and 0.999f.
     /// Used for determining chances of something happening
     /// </summary>
-    /// <returns></returns>
+    /// <returns> Set of random values </returns>
     public static HexHash Create() {
 
         HexHash hash;

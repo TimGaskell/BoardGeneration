@@ -338,6 +338,9 @@ public static class HexMetrics {
 		return near;
 	}
 
+	/// <summary>
+	/// Returns whether there is wrapping on the map
+	/// </summary>
 	public static bool Wrapping {
 		get {
 			return wrapSize > 0;

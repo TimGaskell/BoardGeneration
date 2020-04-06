@@ -160,8 +160,8 @@ public class HexGridChunk : MonoBehaviour
 	/// </summary>
 	/// <param name="direction"> Direction of the hexagon vertex e.g. NE, SE etc</param>
 	/// <param name="cell"> Hexagon </param>
-	/// <param name="v1"> Inside corner of hexagon in the direction </param>
-	/// <param name="v2"> Second inside corner of hexagon in the direction</param>
+	/// <param name="e1"> Group of edge vertices's for first cell which define vector 3 coordinates of where to draw the triangle</param>
+
 	void TriangulateConnection(HexDirection direction, HexCell cell, EdgeVertices e1)
 	{
 		HexCell neighbor = cell.GetNeighbor(direction);
@@ -451,11 +451,12 @@ public class HexGridChunk : MonoBehaviour
 	/// terrace into the slope.
 	/// </summary>
 	/// <param name="begin"> Cell which is lowest </param>
-	/// <param name="begin"> Cell which is lowest </param>
+	/// <param name="beginWeights"> Color weights of the starting cell </param>
 	/// <param name="left"> Left vector of the left Hex </param>
-	/// <param name="leftCell"> Left Hex of the three </param>
+	/// <param name="leftWeights"> Color Weight of the left cell </param>
 	/// <param name="boundary"> </param>
-	/// <param name="boundaryColor">  </param>
+	/// <param name="BoundaryWeights"> Color Weights for the boundary cell</param>
+	/// <param name="indices"> Cell indexes for the three hexes </param>
 	void TriangulateBoundaryTriangle(Vector3 begin, Color beginWeights , Vector3 left, Color leftWeights, Vector3 boundary, Color BoundaryWeights, Vector3 indices)
 	{
 		Vector3 v2 = HexMetrics.Perturb(HexMetrics.TerraceLerp(begin, left, 1));
@@ -481,12 +482,11 @@ public class HexGridChunk : MonoBehaviour
 	/// <summary>
 	/// Used to convert the bridge connecting two hexes into a stepped terrace leading to that hexes elevation.
 	/// </summary>
-	/// <param name="beginleft"> starting left vector3 of  terrace connection </param>
-	/// <param name="beginRight"> starting right vector3 terrace connection </param>
+	/// <param name="begin"> Edge vertices's for the starting cell</param>
 	/// <param name="beginCell"> the hex which the steps will start from </param>
-	/// <param name="endLeft"> end left vector3 of location terrace </param>
-	/// <param name="endRight"> end right vector3 of location terrace </param>
+	/// <param name="end"> Edge vertices's of the ending cell</param>
 	/// <param name="endCell">the hex which the steps will end at </param>
+	/// <param name="hasRoad"> Does the edge for the terrace has a road going through it </param>
 	void TriangulateEdgeTerraces(EdgeVertices begin, HexCell beginCell, EdgeVertices end, HexCell endCell, bool hasRoad)
 	{
 
@@ -780,6 +780,9 @@ public class HexGridChunk : MonoBehaviour
 	/// <param name="v4"> Quad Vector 4</param>
 	/// <param name="v5"> Quad Vector 5</param>
 	/// <param name="v6"> Quad Vector 6</param>
+	/// <param name="w1"> Weight of Color 1</param>
+	/// <param name="w2"> Weight of Color 2</param>
+	/// <param name="indices"> Indexes of hexes for road creation </param>
 	void TriangulateRoadSegment(Vector3 v1, Vector3 v2, Vector3 v3, Vector3 v4, Vector3 v5, Vector3 v6, Color w1, Color w2, Vector3 indices)
 	{
 		roads.AddQuad(v1, v2, v4, v5);
@@ -798,6 +801,7 @@ public class HexGridChunk : MonoBehaviour
 	/// <param name="mR"> right middle vertex </param>
 	/// <param name="e"> Edge vertices's of Hex</param>
 	/// <param name="hasRoadThroughEdge"> Bool value of if road is going through an edge</param>
+	/// <param name="index"> Index of cell where road is being created </param>
 	void TriangulateRoad(Vector3 center, Vector3 mL, Vector3 mR, EdgeVertices e, bool hasRoadThroughEdge, float index)
 	{
 		if (hasRoadThroughEdge)
@@ -828,6 +832,7 @@ public class HexGridChunk : MonoBehaviour
 	/// <param name="center"> center of the hex </param>
 	/// <param name="mL"> left middle vertex </param>
 	/// <param name="mR"> right middle vertex </param>
+	/// <param name="index"> Index of cell where road edge is being created </param>
 	void TriangulateRoadEdge(Vector3 center, Vector3 mL, Vector3 mR, float index)
 	{
 		roads.AddTriangle(center, mL, mR);
@@ -1130,6 +1135,7 @@ public class HexGridChunk : MonoBehaviour
 	/// <param name="y1"> y position of start of quad</param>
 	/// <param name="y2"> y position of end of quad</param>
 	/// <param name="waterY"> y position of water level </param>
+	/// <param name="indices"> Indexes of the three cells involved in waterfall calculation </param>
 	void TriangulateWaterfallInWater (Vector3 v1, Vector3 v2, Vector3 v3, Vector3 v4, float y1 ,float y2 ,float waterY, Vector3 indices) {
 
 		v1.y = v2.y = y1;
@@ -1154,6 +1160,7 @@ public class HexGridChunk : MonoBehaviour
 	/// <param name="e1"> Edge vertices's of water corners of hex </param>
 	/// <param name="e2"> Edge vertices's of solid corners of hex</param>
 	/// <param name="incomingRiver"> whether the hex has an incoming river or not </param>
+	/// <param name="indices"> Indexes of the three cells involved in estuary calculations </param>
 	void TriangulateEstuary(EdgeVertices e1, EdgeVertices e2, bool incomingRiver, Vector3 indices) {
 
 		waterShore.AddTriangle(e2.v1, e1.v2, e1.v1);

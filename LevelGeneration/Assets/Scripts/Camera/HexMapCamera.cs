@@ -132,6 +132,11 @@ public class HexMapCamera : MonoBehaviour
         instance.AdjustPosition(0f, 0f);
     }
 
+    /// <summary>
+    /// Wraps camera to either left or right of map once it goes off the edge of the map. Makes it look like the user went in a circle
+    /// </summary>
+    /// <param name="position"> Position of camera </param>
+    /// <returns> New camera position </returns>
     Vector3 WrapPosition(Vector3 position) {
         float width = grid.cellCountX * HexMetrics.innerDiameter;
         while (position.x < 0f) {

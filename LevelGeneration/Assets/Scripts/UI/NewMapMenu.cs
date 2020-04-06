@@ -75,6 +75,10 @@ public class NewMapMenu : MonoBehaviour
         generateMaps = toggle;
     }
 
+    /// <summary>
+    /// Toggles whether the map will have wrapping
+    /// </summary>
+    /// <param name="toggle"> Yes or no to wrapping map </param>
     public void ToggleWrapping (bool toggle) {
         wrapping = toggle;
     }

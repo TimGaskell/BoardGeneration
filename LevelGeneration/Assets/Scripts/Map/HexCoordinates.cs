@@ -26,6 +26,11 @@ public struct HexCoordinates {
 		}
 	}
 
+	/// <summary>
+	/// Constructor of HexCoordinates. Assigns the x and z values of a hex. If wrapping is enabled, it changes the x and z values to the appropriate amount
+	/// </summary>
+	/// <param name="x"> X coordinate of Hex </param>
+	/// <param name="z"> Z Coordinate of Hex </param>
 	public HexCoordinates (int x, int z) {
 		if (HexMetrics.Wrapping) {
 			int oX = x + z / 2;
@@ -83,11 +88,19 @@ public struct HexCoordinates {
 		return new HexCoordinates(iX, iZ);
 	}
 
+	/// <summary>
+	/// Override methods of To string to better show the coordinates of the cell
+	/// </summary>
+	/// <returns> string of coordinates </returns>
 	public override string ToString () {
 		return "(" +
 			X.ToString() + ", " + Y.ToString() + ", " + Z.ToString() + ")";
 	}
-
+	
+	/// <summary>
+	/// Quick way to print out coordinates of cell
+	/// </summary>
+	/// <returns> string of coordinates separated </returns>
 	public string ToStringOnSeparateLines () {
 		return X.ToString() + "\n" + Y.ToString() + "\n" + Z.ToString();
 	}

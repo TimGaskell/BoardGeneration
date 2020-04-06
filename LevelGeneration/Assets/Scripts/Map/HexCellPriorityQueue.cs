@@ -53,7 +53,7 @@ public class HexCellPriorityQueue {
     }
 
     /// <summary>
-    /// Replaces a hex cells in list with same priorty to a new cell. Loops through all chained hexes with same priority to replace certain hex
+    /// Replaces a hex cells in list with same priority to a new cell. Loops through all chained hexes with same priority to replace certain hex
     /// </summary>
     /// <param name="cell"> Cell that needs to be changed </param>
     /// <param name="oldPriority"> Its old priority index </param>
